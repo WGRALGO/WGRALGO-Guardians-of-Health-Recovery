@@ -1,0 +1,17 @@
+node_modules/
+GuardiansOfHealthRecovery-*.apk
+GuardiansOfHealthRecovery-*.apk.sha256
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/keystore.properties
+android/app/release/
+.gradle/
+*.iml
+.DS_Store
+*.log
+android/captures/
+android/.idea/
+.idea/
+.vscode/

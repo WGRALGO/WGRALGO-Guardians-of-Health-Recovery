@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<title>Guardians of Health &amp; Recovery</title>
+<meta name="theme-color" content="#000000" />
+<style>
+  :root{
+    --gold:#d4af37;
+    --gold-soft:#f5e4b3;
+    --gold-deep:#8a6b1c;
+    --bg:#000;
+    --panel:#0d0d0d;
+    --panel-2:#161616;
+    --line:rgba(212,175,55,0.45);
+    --line-strong:rgba(212,175,55,0.85);
+    --text:#f4f1e6;
+    --muted:#a89e84;
+    --green:#1ea65a;
+    --green-soft:#28c46d;
+    --red:#d83b3b;
+    --red-soft:#ff5a5a;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100%;overflow-x:hidden}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  .app{max-width:760px;margin:0 auto;padding:18px 16px 36px;min-height:100vh;display:flex;flex-direction:column}
+  .brand{display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px 6px 8px}
+  .brand img{width:180px;height:180px;border-radius:24px;display:block;box-shadow:0 0 0 1px var(--line),0 14px 36px rgba(212,175,55,0.18);object-fit:cover}
+  .brand h1{font-size:26px;margin:18px 0 4px;color:var(--gold-soft);letter-spacing:.5px;line-height:1.15;font-weight:800}
+  .brand .sub{color:var(--gold);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1.4px;margin-bottom:10px}
+  .brand .tag{color:var(--muted);font-size:15px;line-height:1.5;max-width:540px;margin:0 auto}
+  .panel{background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02)}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;padding:18px 16px;border-radius:14px;font-size:17px;font-weight:700;border:1px solid var(--line-strong);background:linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%);color:var(--gold-soft);cursor:pointer;letter-spacing:.4px;transition:transform .05s ease,background .2s ease,box-shadow .2s ease;min-height:56px}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:linear-gradient(180deg,#e8c44f 0%,#b58d25 100%);color:#0a0a0a;border-color:#f5e4b3;box-shadow:0 8px 20px rgba(212,175,55,0.28)}
+  .btn.ghost{background:transparent;color:var(--gold);border-color:var(--line)}
+  .btn + .btn{margin-top:10px}
+  .row{display:flex;gap:10px}
+  .row .btn{flex:1}
+  .hidden{display:none !important}
+
+  .hud{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#0a0a0a;font-size:13px;color:var(--gold-soft);font-weight:700}
+  .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--gold)}
+  .progress{height:8px;border-radius:999px;background:#0a0a0a;border:1px solid var(--line);overflow:hidden;margin-bottom:14px}
+  .progress > span{display:block;height:100%;background:linear-gradient(90deg,#b58d25,#f5e4b3);width:0%;transition:width .25s ease}
+  .badge{display:inline-block;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--line);color:var(--gold-soft);background:#0a0a0a;margin-bottom:12px}
+  .badge.casac{border-color:#7fbf7f;color:#cdeed7}
+  .badge.ethics{border-color:#d4af37;color:var(--gold-soft)}
+  .badge.confid{border-color:#9aa8ff;color:#dde2ff}
+  .badge.pharma{border-color:#ff8a5a;color:#ffd7c2}
+  .qcard{font-size:17px;line-height:1.5;color:var(--text);margin:6px 0 16px}
+  .choice{display:flex;align-items:center;gap:12px;width:100%;padding:14px 14px;border-radius:12px;border:1px solid var(--line);background:#0a0a0a;color:var(--text);text-align:left;font-size:15.5px;line-height:1.4;cursor:pointer;margin-bottom:10px;font-weight:600}
+  .choice .marker{width:28px;height:28px;border-radius:999px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:13px;font-weight:800;flex:0 0 auto}
+  .choice.locked{cursor:default;opacity:.9}
+  .choice.correct{border-color:var(--green-soft);background:rgba(40,196,109,0.13)}
+  .choice.correct .marker{border-color:var(--green-soft);color:var(--green-soft)}
+  .choice.wrong{border-color:var(--red-soft);background:rgba(255,90,90,0.12)}
+  .choice.wrong .marker{border-color:var(--red-soft);color:var(--red-soft)}
+  .choice.reveal{border-color:var(--green-soft);background:rgba(40,196,109,0.08)}
+
+  .feedback{margin-top:14px;border-radius:14px;padding:14px;border:1px solid var(--line);background:#0a0a0a}
+  .feedback.good{border-color:var(--green-soft);background:rgba(40,196,109,0.08)}
+  .feedback.bad{border-color:var(--red-soft);background:rgba(255,90,90,0.07)}
+  .feedback h3{margin:0 0 6px;font-size:15px;letter-spacing:.5px;text-transform:uppercase}
+  .feedback.good h3{color:var(--green-soft)}
+  .feedback.bad h3{color:var(--red-soft)}
+  .feedback p{margin:6px 0 0;color:var(--text);font-size:14.5px;line-height:1.5}
+  .lesson{margin-top:10px;padding:12px;border-radius:12px;border:1px dashed var(--line);background:#070707}
+  .lesson strong{color:var(--gold-soft)}
+
+  .result-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 6px}
+  .stat{padding:14px;border-radius:12px;background:#0a0a0a;border:1px solid var(--line);text-align:center}
+  .stat .v{font-size:28px;color:var(--gold-soft);font-weight:800}
+  .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .rating{margin:12px 0;padding:16px;border-radius:14px;border:1px solid var(--line-strong);background:linear-gradient(180deg,rgba(212,175,55,0.10),rgba(212,175,55,0.02));text-align:center}
+  .rating .title{color:var(--gold-soft);font-size:20px;font-weight:800;letter-spacing:.5px}
+  .rating .msg{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5}
+
+  .breakdown{margin-top:14px;display:grid;gap:8px}
+  .brow{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0a0a0a;font-size:14px}
+  .brow .name{color:var(--gold-soft);font-weight:700}
+  .brow .val{color:var(--text);font-weight:700}
+
+  .how ol{padding-left:18px;margin:10px 0}
+  .how li{margin:8px 0;color:var(--text);line-height:1.5;font-size:15px}
+  .how .key{color:var(--gold-soft);font-weight:700}
+
+  .disclaimer{margin-top:18px;padding:12px 14px;border:1px dashed var(--line);border-radius:12px;background:#070707;color:var(--muted);font-size:12.5px;line-height:1.55}
+  footer{margin-top:auto;padding-top:18px;text-align:center;color:var(--muted);font-size:12px}
+  footer .gold{color:var(--gold)}
+
+  @media (max-width:380px){
+    .brand img{width:150px;height:150px}
+    .brand h1{font-size:22px}
+    .qcard{font-size:16px}
+    .choice{font-size:15px}
+  }
+  @media (min-width:720px){
+    .app{padding:28px 24px 48px}
+    .brand img{width:200px;height:200px}
+    .brand h1{font-size:30px}
+    .qcard{font-size:18px}
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <section id="screen-home">
+    <div class="brand">
+      <img src="logo.png" alt="Guardians of Health and Recovery logo" />
+      <div class="sub">WGRALGO</div>
+      <h1>Guardians of Health &amp; Recovery&trade;</h1>
+      <p class="tag">Practice health, recovery, ethics, confidentiality, and pharmacology knowledge through round-based quiz play.</p>
+    </div>
+    <div class="panel">
+      <button class="btn primary" id="btn-start">Start Quiz</button>
+      <button class="btn ghost" id="btn-how">How It Works</button>
+    </div>
+    <div class="disclaimer">
+      Educational practice only. Not medical, mental health, legal, counseling, or certification advice. Does not replace official CASAC coursework, supervision, exam prep, clinical training, or guidance from qualified professionals. For emergencies, contact emergency services.
+    </div>
+    <footer>&copy; <span id="year"></span> <span class="gold">WGRALGO</span> &middot; The Wealth Gap Resolution Algorithm&trade; Inc.</footer>
+  </section>
+
+  <section id="screen-how" class="hidden">
+    <div class="brand">
+      <h1>How It Works</h1>
+      <p class="tag">Round-based educational practice.</p>
+    </div>
+    <div class="panel how">
+      <ol>
+        <li><span class="key">10 randomized questions</span> per round.</li>
+        <li>Categories: <span class="key">CASAC Practice, Ethics, Confidentiality, Pharmacology / Health Awareness</span>.</li>
+        <li>Tap an answer. You will see if you were <span class="key">correct or incorrect</span>, the correct answer, an explanation, and a short learning tip.</li>
+        <li>Your <span class="key">score is shown out of 10</span>. The round complete screen shows strengths and weak spots by category.</li>
+        <li>Replay anytime &mdash; questions reshuffle each round.</li>
+      </ol>
+    </div>
+    <div class="disclaimer">
+      Educational practice only. Confidentiality has legal and ethical limits. Medical, withdrawal, overdose, and medication questions should direct people to qualified professionals. This app does not certify anyone and does not replace CASAC coursework, supervision, or official exam prep.
+    </div>
+    <div class="panel">
+      <button class="btn primary" id="btn-how-start">Start Quiz</button>
+      <button class="btn ghost" id="btn-how-back">Back</button>
+    </div>
+  </section>
+
+  <section id="screen-quiz" class="hidden">
+    <div class="hud">
+      <span class="pill"><span class="dot"></span> <span id="q-index">Question 1/10</span></span>
+      <span class="pill"><span class="dot"></span> Score: <span id="q-score">0</span>/10</span>
+    </div>
+    <div class="progress"><span id="q-progress"></span></div>
+    <div class="panel">
+      <span class="badge" id="q-badge">CASAC</span>
+      <div class="qcard" id="q-text"></div>
+      <div id="q-choices"></div>
+      <div id="q-feedback" class="hidden"></div>
+      <button class="btn primary hidden" id="btn-next">Next Question</button>
+    </div>
+    <div class="panel">
+      <button class="btn ghost" id="btn-quit">Quit Round</button>
+    </div>
+  </section>
+
+  <section id="screen-result" class="hidden">
+    <div class="brand">
+      <h1>Round Complete</h1>
+      <p class="tag">Review your strengths and weak spots, then play again.</p>
+    </div>
+    <div class="panel">
+      <div class="result-stats">
+        <div class="stat"><div class="v" id="r-score">0/10</div><div class="l">Score</div></div>
+        <div class="stat"><div class="v" id="r-pct">0%</div><div class="l">Accuracy</div></div>
+      </div>
+      <div class="rating">
+        <div class="title" id="r-title">&mdash;</div>
+        <div class="msg" id="r-msg">&mdash;</div>
+      </div>
+      <div class="breakdown" id="r-breakdown"></div>
+    </div>
+    <div class="panel">
+      <button class="btn primary" id="btn-again">Play Again</button>
+      <button class="btn ghost" id="btn-home">Home</button>
+    </div>
+    <div class="disclaimer">
+      Educational practice only. Not medical, mental health, legal, counseling, or certification advice. Encourage professional care for medical, psychiatric, overdose, withdrawal, or crisis questions.
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  var QUESTIONS = [
+    {c:"casac",cl:"CASAC Practice",q:"What is the main purpose of a substance use screening?",a:["Diagnose a substance use disorder","Identify whether a fuller assessment is needed","Decide a treatment plan","Set abstinence goals"],k:1,exp:"Screening is a brief check to see if a more thorough assessment is needed; it does not diagnose or set a treatment plan.",tip:"Screen = quick check. Assessment = deeper picture."},
+    {c:"casac",cl:"CASAC Practice",q:"Which of the following best describes the goal of a substance use assessment?",a:["A quick yes/no on whether use exists","A thorough picture of use, risks, supports, and needs","A confession of past behavior","A legal record"],k:1,exp:"An assessment gathers a fuller picture, including use, risks, strengths, history, and supports, to guide planning.",tip:"Assessment is about understanding the whole person, not labeling them."},
+    {c:"casac",cl:"CASAC Practice",q:"What does motivational interviewing primarily try to do?",a:["Convince the client to change","Confront denial","Strengthen the client's own motivation to change","Provide medical treatment"],k:2,exp:"Motivational interviewing strengthens a client's own reasons for change through respectful, collaborative conversation.",tip:"MI works with motivation already inside the person."},
+    {c:"casac",cl:"CASAC Practice",q:"Which is an example of client-centered language?",a:["Addict","Junkie","Person with a substance use disorder","User"],k:2,exp:"Person-first language separates the person from the condition and reduces stigma.",tip:"Person first, condition second."},
+    {c:"casac",cl:"CASAC Practice",q:"In the stages of change model, which stage describes someone considering change but not yet ready?",a:["Precontemplation","Contemplation","Preparation","Maintenance"],k:1,exp:"Contemplation is when a person is weighing reasons for and against change.",tip:"Contemplation = thinking about it, not doing it yet."},
+    {c:"casac",cl:"CASAC Practice",q:"Which of these is a basic principle of trauma-informed care?",a:["Push clients to retell trauma quickly","Assume trauma may be present and prioritize safety","Avoid all difficult topics forever","Diagnose trauma immediately"],k:1,exp:"Trauma-informed care assumes trauma may be present and emphasizes safety, trust, choice, and collaboration.",tip:"Safety first, story second."},
+    {c:"casac",cl:"CASAC Practice",q:"Harm reduction is best described as:",a:["Encouraging substance use","Reducing risks tied to use, even without immediate abstinence","Banning all use","Replacing therapy"],k:1,exp:"Harm reduction reduces health and safety risks associated with substance use; it does not promote use.",tip:"Harm reduction meets people where they are."},
+    {c:"casac",cl:"CASAC Practice",q:"What is relapse prevention mostly about?",a:["Punishing slips","Recognizing triggers and building coping plans","Forcing 30-day stays","Avoiding all emotions"],k:1,exp:"Relapse prevention focuses on identifying triggers and high-risk situations and building skills and supports.",tip:"Plan for triggers before they show up."},
+    {c:"casac",cl:"CASAC Practice",q:"A counselor notices a client lives in unsafe housing. The most appropriate first step is:",a:["Ignore it","Refer to appropriate housing or social services","Pay for their rent","Tell them to move"],k:1,exp:"Connecting clients with appropriate services is part of holistic recovery support and within scope.",tip:"Refer when needs go beyond your role."},
+    {c:"casac",cl:"CASAC Practice",q:"Which best supports a strong therapeutic alliance?",a:["Authority and control","Empathy, respect, and collaboration","Rigid rules with no input","Strict silence"],k:1,exp:"Empathy, respect, and collaboration help build trust and engagement.",tip:"Alliance grows from respect, not control."},
+    {c:"casac",cl:"CASAC Practice",q:"What is an appropriate response to a client expressing ambivalence about quitting?",a:["Demand a decision","Explore both sides of their feelings","Shame them","End the session"],k:1,exp:"Ambivalence is normal; exploring it respectfully can help the client clarify their own direction.",tip:"Hold space for both sides of change."},
+    {c:"casac",cl:"CASAC Practice",q:"Which is most consistent with recovery-oriented care?",a:["One pathway for everyone","Multiple pathways and supports tailored to the person","Only 12-step programs","Only medication"],k:1,exp:"Recovery can take many forms; recovery-oriented care respects multiple pathways.",tip:"Many roads to recovery."},
+    {c:"casac",cl:"CASAC Practice",q:"A treatment plan should be:",a:["Written only by the counselor","Collaborative with the client","Hidden from the client","One-size-fits-all"],k:1,exp:"Treatment planning works best when the client helps set goals and is informed throughout.",tip:"Plan with the client, not at them."},
+    {c:"casac",cl:"CASAC Practice",q:"What is the role of a counselor when a client has needs outside their scope?",a:["Provide the service anyway","Refer to the appropriate professional","Pretend it isn't important","Tell the client to figure it out"],k:1,exp:"Counselors refer to appropriate professionals (medical, legal, psychiatric, etc.) for needs outside their scope.",tip:"Refer out; don't stretch your scope."},
+    {c:"casac",cl:"CASAC Practice",q:"Which is a sign of a respectful intake conversation?",a:["Rapid-fire judgmental questions","Active listening and explaining what is being asked","Demanding answers","Reading from a form without speaking"],k:1,exp:"Active listening and transparency help clients feel safe and engaged.",tip:"Explain why you are asking, then listen."},
+
+    {c:"ethics",cl:"Ethics",q:"A counselor offering to date a former client is best described as:",a:["A reasonable choice","A potential dual relationship and ethical concern","Standard practice","Unimportant"],k:1,exp:"Romantic or business ties with current or former clients are widely considered dual relationships that can harm clients.",tip:"Dual relationships blur trust and power."},
+    {c:"ethics",cl:"Ethics",q:"Scope of practice means:",a:["Doing whatever helps","Working within your training, credentials, and role","Avoiding referrals","Setting your own rules"],k:1,exp:"Scope of practice limits work to what your credentials and training authorize you to do.",tip:"Stay in your lane; refer the rest."},
+    {c:"ethics",cl:"Ethics",q:"Informed consent should include:",a:["Only the cost","Services, risks, benefits, confidentiality limits, and choices","Just a signature","Marketing materials"],k:1,exp:"Informed consent describes what services involve, limits of confidentiality, risks, benefits, and the client's choices.",tip:"Consent is about understanding, not just signing."},
+    {c:"ethics",cl:"Ethics",q:"Which statement reflects cultural humility?",a:["I am the expert on every culture","I keep learning and respect each client's background","I assume everyone is the same","Culture does not matter"],k:1,exp:"Cultural humility is ongoing learning, respect, and recognition that the client is the expert on their own life.",tip:"Be a learner, not a know-it-all."},
+    {c:"ethics",cl:"Ethics",q:"A counselor accepts an expensive personal gift from a client. This is most likely:",a:["Required","An ethical concern related to boundaries","Always fine","A type of consent"],k:1,exp:"Expensive gifts can blur boundaries and create obligation; agencies usually have written policies on gifts.",tip:"Big gifts = big boundary issue."},
+    {c:"ethics",cl:"Ethics",q:"Avoiding judgmental language is important because:",a:["It is stylish","It supports dignity, trust, and engagement","It hides problems","It is required by gravity"],k:1,exp:"Respectful language supports dignity and helps clients engage in care.",tip:"Words shape the relationship."},
+    {c:"ethics",cl:"Ethics",q:"Documentation should generally be:",a:["Whatever feels right","Accurate, respectful, timely, and secure","A personal diary","Long stories about clients"],k:1,exp:"Records should be accurate, respectful, timely, and stored securely.",tip:"Document facts, not opinions about the person."},
+    {c:"ethics",cl:"Ethics",q:"A conflict of interest is best handled by:",a:["Ignoring it","Disclosing and addressing it appropriately","Hiding it","Using it for personal gain"],k:1,exp:"Conflicts of interest should be disclosed and managed according to ethical guidance and agency policy.",tip:"Disclose and address; never hide."},
+    {c:"ethics",cl:"Ethics",q:"Which best describes mandatory reporting in general terms?",a:["Reporting everything ever shared","A legal duty in specific safety situations defined by law","An optional choice","A casual decision"],k:1,exp:"Mandatory reporting laws require disclosure in specific safety situations; the details depend on jurisdiction and role.",tip:"Know your duty to report; it is not optional."},
+    {c:"ethics",cl:"Ethics",q:"A client asks the counselor to keep a secret about ongoing abuse of a child. The counselor should:",a:["Promise full secrecy","Explain reporting duties and follow the law","Forget the conversation","Tell the client it did not happen"],k:1,exp:"Counselors must follow legal duties about reporting child abuse and explain confidentiality limits clearly.",tip:"Safety obligations override personal promises."},
+    {c:"ethics",cl:"Ethics",q:"Respecting client dignity includes:",a:["Speaking respectfully and protecting client identity","Sharing their story freely","Mocking past behavior","Demanding gratitude"],k:0,exp:"Dignity is upheld through respectful communication and protecting client identity.",tip:"Dignity guides every interaction."},
+    {c:"ethics",cl:"Ethics",q:"A counselor should obtain supervision when:",a:["Never","They face unclear ethical or clinical situations","Only at year's end","Only by request from clients"],k:1,exp:"Supervision is a core safeguard for ethical and clinical decisions.",tip:"When in doubt, consult supervision."},
+    {c:"ethics",cl:"Ethics",q:"Self-care for counselors is:",a:["Optional luxury","An ethical responsibility supporting safe practice","Selfish","Unrelated to ethics"],k:1,exp:"Burnout impairs judgment; self-care helps maintain safe, ethical practice.",tip:"You can't pour from an empty cup."},
+    {c:"ethics",cl:"Ethics",q:"Posting a client's identifying details on social media is:",a:["Fine if no names","A serious ethics and confidentiality violation","Encouraged for awareness","Acceptable with hashtags"],k:1,exp:"Sharing identifying client information publicly is a major ethics and confidentiality violation regardless of names.",tip:"Identifiable details are still confidential."},
+    {c:"ethics",cl:"Ethics",q:"Best practice when a counselor's personal values clash with a client's choices is to:",a:["Lecture the client","Keep services client-centered or refer if it impairs care","Refuse without explanation","Punish the client"],k:1,exp:"Counselors stay client-centered and refer ethically if personal values impair care.",tip:"Client needs, not counselor opinions."},
+
+    {c:"confid",cl:"Confidentiality",q:"Confidentiality in substance use services is best described as:",a:["Absolute and unlimited","Strongly protected with specific legal and ethical limits","Optional","Up to the counselor each day"],k:1,exp:"Confidentiality is strongly protected but has specific exceptions defined by law and ethics.",tip:"Strong, but not absolute."},
+    {c:"confid",cl:"Confidentiality",q:"A release of information should be:",a:["Verbal and casual","Specific, informed, time-limited, and revocable","A blanket forever release","Whatever staff want"],k:1,exp:"Releases should be specific about what information, to whom, for what purpose, and for how long, and be revocable.",tip:"Releases: specific, informed, revocable."},
+    {c:"confid",cl:"Confidentiality",q:"The minimum necessary principle means:",a:["Sharing everything just in case","Sharing only what is needed for the purpose","Sharing nothing ever","Sharing whatever is asked"],k:1,exp:"Share only the minimum necessary information for the purpose stated in the release.",tip:"Need-to-know only."},
+    {c:"confid",cl:"Confidentiality",q:"A counselor sees a client in public. The counselor should:",a:["Greet the client loudly and mention treatment","Let the client choose whether to acknowledge them","Avoid all eye contact forever","Talk about the case in public"],k:1,exp:"In public, let the client lead any acknowledgment to protect their privacy.",tip:"Client controls the public moment."},
+    {c:"confid",cl:"Confidentiality",q:"Discussing client cases in an elevator or hallway is:",a:["Standard","A casual disclosure risk and confidentiality violation","Required","Encouraged"],k:1,exp:"Discussing identifiable client information in public spaces risks confidentiality and dignity.",tip:"No client talk in public spaces."},
+    {c:"confid",cl:"Confidentiality",q:"Group setting confidentiality reminders should:",a:["Be skipped to save time","Be clearly stated and reinforced","Be hidden","Be optional"],k:1,exp:"Groups need clear, repeated reminders about respecting one another's privacy.",tip:"Group privacy must be taught and repeated."},
+    {c:"confid",cl:"Confidentiality",q:"Secure documentation means:",a:["Open files on a public desk","Stored, transmitted, and accessed only as policy and law allow","Posted on social media","Mailed to anyone"],k:1,exp:"Records are stored, sent, and accessed according to policy and law.",tip:"Security is a daily habit, not an event."},
+    {c:"confid",cl:"Confidentiality",q:"A family member calls asking about a client. The counselor should:",a:["Confirm the client is in treatment","Not confirm or share without a valid release","Share session details","Discuss the diagnosis"],k:1,exp:"Without a valid release, do not confirm or share information.",tip:"No release, no disclosure."},
+    {c:"confid",cl:"Confidentiality",q:"Confidentiality limits typically include:",a:["Random staff curiosity","Specific safety situations defined by law","Holiday parties","Marketing opportunities"],k:1,exp:"Limits exist for specific safety situations defined by law, such as certain risks of harm and abuse reports.",tip:"Limits are legal, not casual."},
+    {c:"confid",cl:"Confidentiality",q:"A client wants to share their own story publicly. They can:",a:["Be stopped by the agency","Choose to share their own story; agency still protects records","Be reported","Be punished"],k:1,exp:"Clients can share their own experiences; the agency still must protect its records and other clients.",tip:"Client's own story belongs to them."},
+    {c:"confid",cl:"Confidentiality",q:"Sharing identifying information at a community meeting is:",a:["Encouraged","A confidentiality violation without proper consent","Required","Helpful"],k:1,exp:"Identifying information should not be shared without proper, informed consent.",tip:"Identifiable details need consent."},
+    {c:"confid",cl:"Confidentiality",q:"A client's record shows substance use history. A new outside provider asks for full records. Best step:",a:["Send everything by email","Get a specific, informed release first","Share verbally only","Post on a portal"],k:1,exp:"A specific release governs what is shared, with whom, and for what purpose.",tip:"Release first, share after."},
+    {c:"confid",cl:"Confidentiality",q:"When in doubt about disclosure, a counselor should:",a:["Guess","Pause and consult supervision and policy","Share quickly","Ask the client to decide alone"],k:1,exp:"Pause, consult supervision, and follow policy and law.",tip:"Doubt = pause and consult."},
+    {c:"confid",cl:"Confidentiality",q:"Texting clients about appointments should:",a:["Include diagnoses","Follow agency policy and avoid sensitive details","Be public posts","Include other clients"],k:1,exp:"Use approved methods, minimal information, and follow policy.",tip:"Less detail, more security."},
+    {c:"confid",cl:"Confidentiality",q:"Storing records on personal devices is generally:",a:["Encouraged","A risk that must follow strict policy","Required","Free of concern"],k:1,exp:"Personal devices raise security risks and must follow strict policy if allowed at all.",tip:"Personal devices = high risk."},
+
+    {c:"pharma",cl:"Pharmacology",q:"Medication-assisted treatment (MAT) for opioid use disorder typically uses:",a:["Random medications","Evidence-based medications combined with counseling","No medication ever","Only herbal supplements"],k:1,exp:"MAT pairs evidence-based medications with counseling and supports as part of a comprehensive plan.",tip:"MAT = medication + support, not either alone."},
+    {c:"pharma",cl:"Pharmacology",q:"Naloxone is awareness-relevant because:",a:["It cures addiction","It can reverse an opioid overdose temporarily","It is a stimulant","It treats alcohol use"],k:1,exp:"Naloxone can temporarily reverse opioid overdose effects. Emergency services should still be contacted.",tip:"Naloxone buys time. Call for help."},
+    {c:"pharma",cl:"Pharmacology",q:"Combining alcohol with opioids or benzodiazepines is generally:",a:["Safer than either alone","Higher risk for dangerous respiratory depression","A required treatment","Harmless"],k:1,exp:"Combining depressants increases the risk of dangerous respiratory depression and overdose.",tip:"Depressants stack dangerously."},
+    {c:"pharma",cl:"Pharmacology",q:"Stimulants generally:",a:["Slow breathing and heart rate","Speed up alertness, heart rate, and blood pressure","Are sedatives","Are antibiotics"],k:1,exp:"Stimulants increase alertness, heart rate, and blood pressure and carry cardiovascular risks.",tip:"Stimulants = speed up; depressants = slow down."},
+    {c:"pharma",cl:"Pharmacology",q:"Opioids primarily:",a:["Stimulate alertness","Suppress pain and can suppress breathing","Cure infections","Treat psychosis"],k:1,exp:"Opioids relieve pain but can suppress breathing, especially at higher doses or with other depressants.",tip:"Opioids can quiet breathing."},
+    {c:"pharma",cl:"Pharmacology",q:"Benzodiazepines are:",a:["Stimulants","Depressants often prescribed for anxiety or seizures","Antibiotics","Antifungals"],k:1,exp:"Benzodiazepines are central nervous system depressants. Misuse and combination with other depressants is risky.",tip:"Benzos: powerful, prescription-only, risky to misuse."},
+    {c:"pharma",cl:"Pharmacology",q:"Alcohol withdrawal can be:",a:["Always mild","Medically dangerous in some people and may need professional care","A myth","Treated with more alcohol"],k:1,exp:"Severe alcohol withdrawal can be medically dangerous and may require professional medical care.",tip:"Severe alcohol withdrawal can be an emergency."},
+    {c:"pharma",cl:"Pharmacology",q:"Cannabis is best discussed as:",a:["Risk-free for everyone","A substance with possible risks and benefits depending on the person and context","Always harmful or always helpful","A vitamin"],k:1,exp:"Cannabis effects vary widely; it should be discussed honestly with attention to age, mental health, dosing, and legal status.",tip:"Honest, individualized, age-aware conversation."},
+    {c:"pharma",cl:"Pharmacology",q:"Tolerance generally means:",a:["Needing more of a substance to feel the same effect","An allergy","Sobriety","Withdrawal"],k:0,exp:"Tolerance is when more of a substance is needed to produce the same effect.",tip:"Tolerance = same effect needs more."},
+    {c:"pharma",cl:"Pharmacology",q:"After a period of abstinence, returning to a previous opioid dose can be:",a:["Safer","A higher overdose risk because tolerance has dropped","Without any risk","A cure"],k:1,exp:"Reduced tolerance after abstinence can make a previous dose dangerous and increase overdose risk.",tip:"Tolerance drops fast; doses do not."},
+    {c:"pharma",cl:"Pharmacology",q:"Counselors should:",a:["Recommend specific dosages","Avoid giving personalized medical advice and refer to medical professionals","Adjust medications","Diagnose conditions"],k:1,exp:"Personalized medical decisions belong with qualified medical professionals.",tip:"Refer medical questions to medical pros."},
+    {c:"pharma",cl:"Pharmacology",q:"A client says they want to stop a prescribed medication suddenly. The counselor should:",a:["Tell them to stop today","Encourage them to talk with the prescribing provider","Suggest a substitute","Hand them new meds"],k:1,exp:"Stopping certain medications suddenly can be unsafe. The prescribing professional should be involved.",tip:"Stopping meds is a medical conversation."},
+    {c:"pharma",cl:"Pharmacology",q:"Signs of possible opioid overdose can include:",a:["Energy and rapid speech","Slow or stopped breathing, blue lips, unresponsiveness","Loud singing","Bright skin"],k:1,exp:"Slow or stopped breathing, blue or gray skin, and unresponsiveness are red flags. Call emergency services.",tip:"Overdose = call for help, don't wait."},
+    {c:"pharma",cl:"Pharmacology",q:"Polypharmacy means:",a:["Using one substance only","Using multiple substances or medications, which can raise interaction risks","Avoiding all medications","A type of therapy"],k:1,exp:"Polypharmacy involves multiple substances or medications and can increase interaction risks; medical review helps.",tip:"More substances, more interactions."},
+    {c:"pharma",cl:"Pharmacology",q:"Encouraging professional care means:",a:["Telling people to skip doctors","Helping connect them with qualified medical, mental health, and emergency services as appropriate","Replacing their doctor","Avoiding all referrals"],k:1,exp:"Counselors connect clients with qualified care for medical, psychiatric, and emergency needs.",tip:"Be the bridge, not the doctor."}
+  ];
+
+  var CAT_LABEL = {casac:"CASAC Practice", ethics:"Ethics", confid:"Confidentiality", pharma:"Pharmacology"};
+  var CAT_CLASS = {casac:"casac", ethics:"ethics", confid:"confid", pharma:"pharma"};
+
+  var state = null;
+
+  function $(id){ return document.getElementById(id); }
+  function show(id){
+    ["screen-home","screen-how","screen-quiz","screen-result"].forEach(function(s){
+      $(s).classList.add("hidden");
+    });
+    $(id).classList.remove("hidden");
+    window.scrollTo(0,0);
+  }
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pickRound(){
+    var pool = shuffle(QUESTIONS).slice(0, 10);
+    return pool.map(function(q){
+      var idx = q.a.map(function(_, i){ return i; });
+      var order = shuffle(idx);
+      var choices = order.map(function(i){ return q.a[i]; });
+      var correct = order.indexOf(q.k);
+      return {c:q.c, cl:q.cl, q:q.q, choices:choices, correct:correct, exp:q.exp, tip:q.tip};
+    });
+  }
+
+  function startRound(){
+    state = {
+      round: pickRound(),
+      i: 0,
+      score: 0,
+      locked: false,
+      byCat: {casac:{c:0,t:0},ethics:{c:0,t:0},confid:{c:0,t:0},pharma:{c:0,t:0}}
+    };
+    show("screen-quiz");
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    var q = state.round[state.i];
+    $("q-index").textContent = "Question " + (state.i + 1) + "/10";
+    $("q-score").textContent = state.score;
+    $("q-progress").style.width = ((state.i) / 10 * 100) + "%";
+
+    var badge = $("q-badge");
+    badge.className = "badge " + CAT_CLASS[q.c];
+    badge.textContent = q.cl;
+
+    $("q-text").textContent = q.q;
+
+    var choicesEl = $("q-choices");
+    choicesEl.innerHTML = "";
+    var markers = ["A","B","C","D"];
+    q.choices.forEach(function(text, i){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "choice";
+      btn.innerHTML = '<span class="marker">' + markers[i] + '</span><span>' + escapeHtml(text) + '</span>';
+      btn.addEventListener("click", function(){ pick(i, btn); });
+      choicesEl.appendChild(btn);
+    });
+
+    var fb = $("q-feedback");
+    fb.classList.add("hidden");
+    fb.innerHTML = "";
+    $("btn-next").classList.add("hidden");
+    state.locked = false;
+  }
+
+  function pick(i, btn){
+    if (state.locked) return;
+    state.locked = true;
+    var q = state.round[state.i];
+    state.byCat[q.c].t += 1;
+    var choices = document.querySelectorAll("#q-choices .choice");
+    choices.forEach(function(el, idx){
+      el.classList.add("locked");
+      if (idx === q.correct) el.classList.add("correct");
+      if (idx === i && i !== q.correct) el.classList.add("wrong");
+    });
+
+    var good = i === q.correct;
+    if (good){
+      state.score += 1;
+      state.byCat[q.c].c += 1;
+      $("q-score").textContent = state.score;
+    }
+
+    var fb = $("q-feedback");
+    fb.className = "feedback " + (good ? "good" : "bad");
+    fb.innerHTML =
+      '<h3>' + (good ? "Correct" : "Not quite") + '</h3>' +
+      '<p>' + escapeHtml(q.exp) + '</p>' +
+      '<div class="lesson"><strong>Learning tip:</strong> ' + escapeHtml(q.tip) + '</div>';
+    fb.classList.remove("hidden");
+    $("btn-next").classList.remove("hidden");
+    $("q-progress").style.width = ((state.i + 1) / 10 * 100) + "%";
+  }
+
+  function next(){
+    state.i += 1;
+    if (state.i >= 10){
+      finish();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function finish(){
+    var pct = Math.round(state.score / 10 * 100);
+    $("r-score").textContent = state.score + "/10";
+    $("r-pct").textContent = pct + "%";
+    var title, msg;
+    if (state.score >= 9){ title = "Recovery Knowledge Guardian"; msg = "Excellent grasp of ethics, confidentiality, and care basics. Keep refining with supervision and study."; }
+    else if (state.score >= 7){ title = "Strong Practice Ready"; msg = "Solid foundation. Review missed areas to sharpen consistency."; }
+    else if (state.score >= 5){ title = "Building the Foundation"; msg = "You are on your way. Replay rounds and study weaker categories."; }
+    else if (state.score >= 3){ title = "Needs Review"; msg = "Spend time with the core concepts. Repetition builds clarity."; }
+    else { title = "Restart the Round"; msg = "Reset, slow down, read each tip, and try again."; }
+    $("r-title").textContent = title;
+    $("r-msg").textContent = msg;
+
+    var bd = $("r-breakdown");
+    bd.innerHTML = "";
+    ["casac","ethics","confid","pharma"].forEach(function(c){
+      var row = state.byCat[c];
+      if (row.t === 0) return;
+      var div = document.createElement("div");
+      div.className = "brow";
+      div.innerHTML = '<span class="name">' + CAT_LABEL[c] + '</span><span class="val">' + row.c + ' / ' + row.t + '</span>';
+      bd.appendChild(div);
+    });
+    show("screen-result");
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(ch){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch];
+    });
+  }
+
+  $("btn-start").addEventListener("click", startRound);
+  $("btn-how").addEventListener("click", function(){ show("screen-how"); });
+  $("btn-how-back").addEventListener("click", function(){ show("screen-home"); });
+  $("btn-how-start").addEventListener("click", startRound);
+  $("btn-next").addEventListener("click", next);
+  $("btn-quit").addEventListener("click", function(){ if (confirm("Quit this round? Your progress will be lost.")) show("screen-home"); });
+  $("btn-again").addEventListener("click", startRound);
+  $("btn-home").addEventListener("click", function(){ show("screen-home"); });
+
+  show("screen-home");
+})();
+</script>
+</body>
+</html>

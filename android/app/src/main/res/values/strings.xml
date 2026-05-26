@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Guardians of Health &amp; Recovery</string>
+    <string name="title_activity_main">Guardians of Health &amp; Recovery</string>
+    <string name="package_name">org.wgralgo.guardianshealthrecovery</string>
+    <string name="custom_url_scheme">org.wgralgo.guardianshealthrecovery</string>
+</resources>
