@@ -1,426 +1,1397 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none';">
+<meta name="theme-color" content="#000000">
 <title>Guardians of Health &amp; Recovery</title>
-<meta name="theme-color" content="#000000" />
+<!-- Guardians of Health & Recovery — Android app build.
+     Game: the WGRA website version, wrapped in an app shell.
+     No cookies, no trackers, no outside files, nothing saved on the device. -->
 <style>
-  :root{
-    --gold:#d4af37;
-    --gold-soft:#f5e4b3;
-    --gold-deep:#8a6b1c;
-    --bg:#000;
-    --panel:#0d0d0d;
-    --panel-2:#161616;
-    --line:rgba(212,175,55,0.45);
-    --line-strong:rgba(212,175,55,0.85);
-    --text:#f4f1e6;
-    --muted:#a89e84;
-    --green:#1ea65a;
-    --green-soft:#28c46d;
-    --red:#d83b3b;
-    --red-soft:#ff5a5a;
+  .wgra-ghr-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    background: radial-gradient(circle at top, #181818 0%, #050505 60%);
+    padding: 56px 20px 72px;
+    color: #fdfaf0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100%;overflow-x:hidden}
-  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-  .app{max-width:760px;margin:0 auto;padding:18px 16px 36px;min-height:100vh;display:flex;flex-direction:column}
-  .brand{display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px 6px 8px}
-  .brand img{width:180px;height:180px;border-radius:24px;display:block;box-shadow:0 0 0 1px var(--line),0 14px 36px rgba(212,175,55,0.18);object-fit:cover}
-  .brand h1{font-size:26px;margin:18px 0 4px;color:var(--gold-soft);letter-spacing:.5px;line-height:1.15;font-weight:800}
-  .brand .sub{color:var(--gold);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1.4px;margin-bottom:10px}
-  .brand .tag{color:var(--muted);font-size:15px;line-height:1.5;max-width:540px;margin:0 auto}
-  .panel{background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02)}
-  .btn{display:flex;align-items:center;justify-content:center;width:100%;padding:18px 16px;border-radius:14px;font-size:17px;font-weight:700;border:1px solid var(--line-strong);background:linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 100%);color:var(--gold-soft);cursor:pointer;letter-spacing:.4px;transition:transform .05s ease,background .2s ease,box-shadow .2s ease;min-height:56px}
-  .btn:active{transform:translateY(1px)}
-  .btn.primary{background:linear-gradient(180deg,#e8c44f 0%,#b58d25 100%);color:#0a0a0a;border-color:#f5e4b3;box-shadow:0 8px 20px rgba(212,175,55,0.28)}
-  .btn.ghost{background:transparent;color:var(--gold);border-color:var(--line)}
-  .btn + .btn{margin-top:10px}
-  .row{display:flex;gap:10px}
-  .row .btn{flex:1}
-  .hidden{display:none !important}
 
-  .hud{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#0a0a0a;font-size:13px;color:var(--gold-soft);font-weight:700}
-  .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--gold)}
-  .progress{height:8px;border-radius:999px;background:#0a0a0a;border:1px solid var(--line);overflow:hidden;margin-bottom:14px}
-  .progress > span{display:block;height:100%;background:linear-gradient(90deg,#b58d25,#f5e4b3);width:0%;transition:width .25s ease}
-  .badge{display:inline-block;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--line);color:var(--gold-soft);background:#0a0a0a;margin-bottom:12px}
-  .badge.casac{border-color:#7fbf7f;color:#cdeed7}
-  .badge.ethics{border-color:#d4af37;color:var(--gold-soft)}
-  .badge.confid{border-color:#9aa8ff;color:#dde2ff}
-  .badge.pharma{border-color:#ff8a5a;color:#ffd7c2}
-  .qcard{font-size:17px;line-height:1.5;color:var(--text);margin:6px 0 16px}
-  .choice{display:flex;align-items:center;gap:12px;width:100%;padding:14px 14px;border-radius:12px;border:1px solid var(--line);background:#0a0a0a;color:var(--text);text-align:left;font-size:15.5px;line-height:1.4;cursor:pointer;margin-bottom:10px;font-weight:600}
-  .choice .marker{width:28px;height:28px;border-radius:999px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:13px;font-weight:800;flex:0 0 auto}
-  .choice.locked{cursor:default;opacity:.9}
-  .choice.correct{border-color:var(--green-soft);background:rgba(40,196,109,0.13)}
-  .choice.correct .marker{border-color:var(--green-soft);color:var(--green-soft)}
-  .choice.wrong{border-color:var(--red-soft);background:rgba(255,90,90,0.12)}
-  .choice.wrong .marker{border-color:var(--red-soft);color:var(--red-soft)}
-  .choice.reveal{border-color:var(--green-soft);background:rgba(40,196,109,0.08)}
-
-  .feedback{margin-top:14px;border-radius:14px;padding:14px;border:1px solid var(--line);background:#0a0a0a}
-  .feedback.good{border-color:var(--green-soft);background:rgba(40,196,109,0.08)}
-  .feedback.bad{border-color:var(--red-soft);background:rgba(255,90,90,0.07)}
-  .feedback h3{margin:0 0 6px;font-size:15px;letter-spacing:.5px;text-transform:uppercase}
-  .feedback.good h3{color:var(--green-soft)}
-  .feedback.bad h3{color:var(--red-soft)}
-  .feedback p{margin:6px 0 0;color:var(--text);font-size:14.5px;line-height:1.5}
-  .lesson{margin-top:10px;padding:12px;border-radius:12px;border:1px dashed var(--line);background:#070707}
-  .lesson strong{color:var(--gold-soft)}
-
-  .result-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 6px}
-  .stat{padding:14px;border-radius:12px;background:#0a0a0a;border:1px solid var(--line);text-align:center}
-  .stat .v{font-size:28px;color:var(--gold-soft);font-weight:800}
-  .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
-  .rating{margin:12px 0;padding:16px;border-radius:14px;border:1px solid var(--line-strong);background:linear-gradient(180deg,rgba(212,175,55,0.10),rgba(212,175,55,0.02));text-align:center}
-  .rating .title{color:var(--gold-soft);font-size:20px;font-weight:800;letter-spacing:.5px}
-  .rating .msg{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5}
-
-  .breakdown{margin-top:14px;display:grid;gap:8px}
-  .brow{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0a0a0a;font-size:14px}
-  .brow .name{color:var(--gold-soft);font-weight:700}
-  .brow .val{color:var(--text);font-weight:700}
-
-  .how ol{padding-left:18px;margin:10px 0}
-  .how li{margin:8px 0;color:var(--text);line-height:1.5;font-size:15px}
-  .how .key{color:var(--gold-soft);font-weight:700}
-
-  .disclaimer{margin-top:18px;padding:12px 14px;border:1px dashed var(--line);border-radius:12px;background:#070707;color:var(--muted);font-size:12.5px;line-height:1.55}
-  footer{margin-top:auto;padding-top:18px;text-align:center;color:var(--muted);font-size:12px}
-  footer .gold{color:var(--gold)}
-
-  @media (max-width:380px){
-    .brand img{width:150px;height:150px}
-    .brand h1{font-size:22px}
-    .qcard{font-size:16px}
-    .choice{font-size:15px}
+  .wgra-ghr-inner {
+    max-width: 960px;
+    margin: 0 auto;
   }
-  @media (min-width:720px){
-    .app{padding:28px 24px 48px}
-    .brand img{width:200px;height:200px}
-    .brand h1{font-size:30px}
-    .qcard{font-size:18px}
+
+  .wgra-ghr-kicker {
+    font-size: 13px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(245, 228, 180, 0.9);
+    margin-bottom: 12px;
+    text-align: center;
   }
+
+  .wgra-ghr-heading {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.2;
+    margin: 0 0 10px;
+    text-align: center;
+  }
+
+  .wgra-ghr-heading span { color: #f5e4b3; }
+
+  .wgra-ghr-sub {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #f5e4b3;
+    max-width: 720px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+
+  .wgra-ghr-card {
+    background: radial-gradient(circle at top, #202020 0%, #050505 60%);
+    border-radius: 18px;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+    padding: 26px 22px;
+  }
+
+  .wgra-ghr-card + .wgra-ghr-card { margin-top: 18px; }
+
+  .wgra-ghr-card p {
+    margin: 0 0 12px;
+    line-height: 1.7;
+  }
+
+  /* LEVEL PICKER */
+  .wgra-ghr-levels {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 8px 0 18px;
+  }
+
+  .wgra-ghr-level {
+    cursor: pointer;
+    border-radius: 14px;
+    padding: 12px 8px;
+    background: rgba(5,5,5,0.9) !important;
+    border: 1px solid rgba(245,228,179,0.5);
+    color: #fbe79a !important;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .wgra-ghr-level small {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #e6e6e6 !important;
+    margin-top: 3px;
+  }
+
+  .wgra-ghr-level.is-selected {
+    background: rgba(212,175,55,0.22) !important;
+    border: 2px solid #fbe79a;
+    box-shadow: 0 0 14px rgba(212,175,55,0.6);
+  }
+
+  /* TOP ROW */
+  .wgra-ghr-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .wgra-ghr-chip {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #f5e4b3;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(5,5,5,0.8));
+  }
+
+  .wgra-ghr-meta {
+    font-size: 15px;
+    color: #f5e4b3;
+    text-align: right;
+  }
+
+  .wgra-ghr-meta strong { color: #fbe79a; }
+
+  .wgra-ghr-question {
+    font-size: 21px;
+    line-height: 1.5;
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    margin-bottom: 18px;
+  }
+
+  .wgra-ghr-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  @media (min-width: 760px) {
+    .wgra-ghr-options { grid-template-columns: 1fr 1fr; }
+  }
+
+  .wgra-ghr-option {
+    width: 100%;
+    text-align: left;
+    padding: 13px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(245,228,179,0.25);
+    background: rgba(15,15,15,0.92) !important;
+    color: #fdfaf0 !important;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: border 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+  }
+
+  .wgra-ghr-option:hover:not(:disabled),
+  .wgra-ghr-option:focus-visible {
+    border-color: rgba(212, 175, 55, 0.8);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .wgra-ghr-option:disabled { cursor: default; }
+
+  .wgra-ghr-letter {
+    font-weight: 800;
+    color: #f5e4b3;
+  }
+
+  .wgra-ghr-option.correct {
+    border-color: rgba(55, 212, 123, 0.95);
+    background: radial-gradient(circle at top, rgba(55, 212, 123, 0.24), rgba(8, 32, 18, 0.96)) !important;
+  }
+
+  .wgra-ghr-option.incorrect {
+    border-color: rgba(255, 75, 75, 0.95);
+    background: radial-gradient(circle at top, rgba(255, 75, 75, 0.22), rgba(42, 8, 8, 0.96)) !important;
+  }
+
+  .wgra-ghr-feedback {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #f5e4b3;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(245,228,179,0.35);
+    background: rgba(5,5,5,0.85);
+  }
+
+  .wgra-ghr-feedback:empty { display: none; }
+  .wgra-ghr-feedback strong { color: #fdfaf0; }
+
+  .wgra-ghr-ok { color: #37d47b !important; font-weight: 800; }
+  .wgra-ghr-no { color: #ff6b6b !important; font-weight: 800; }
+
+  .wgra-ghr-myth {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255,255,255,0.3);
+  }
+
+  .wgra-ghr-row {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .wgra-ghr-btn,
+  .wgra-ghr-btn-ghost {
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    font-weight: 700;
+    transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  }
+
+  .wgra-ghr-btn {
+    border: none;
+    background: radial-gradient(circle at top left, #f5e4b3 0%, #d4af37 45%, #b07a12 100%) !important;
+    color: #050505 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  .wgra-ghr-btn-ghost {
+    border: 1px solid rgba(212, 175, 55, 0.8);
+    background: transparent !important;
+    color: #f5e4b3 !important;
+  }
+
+  .wgra-ghr-btn:hover:not(:disabled),
+  .wgra-ghr-btn-ghost:hover {
+    transform: translateY(-1px);
+  }
+
+  .wgra-ghr-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  /* RESULTS */
+  .wgra-ghr-results-score {
+    font-size: 28px;
+    font-weight: 800;
+    color: #d4af37;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .wgra-ghr-results-msg {
+    text-align: center;
+    color: #f5e4b3;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .wgra-ghr-topics {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    margin: 6px 0 16px;
+  }
+
+  .wgra-ghr-topics td {
+    color: #fdfaf0;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(245,228,179,0.2);
+  }
+
+  .wgra-ghr-topics td:last-child {
+    text-align: right;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .wgra-ghr-h3 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #f5e4b3;
+    margin: 0 0 8px;
+  }
+
+  .wgra-ghr-review-item {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    background: rgba(5,5,5,0.9);
+    border: 1px solid rgba(212,175,55,0.3);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .wgra-ghr-review-item .wgra-q { font-weight: 700; margin-bottom: 4px; }
+  .wgra-ghr-review-item .wgra-why { color: #f5e4b3; margin-top: 4px; }
+
+  .wgra-ghr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 16px 0 20px;
+  }
+
+  /* HELP BOX */
+  .wgra-ghr-help {
+    border: 1px solid rgba(55, 212, 123, 0.55);
+    background: rgba(55, 212, 123, 0.06);
+  }
+
+  .wgra-ghr-help ul {
+    margin: 6px 0 10px;
+    padding-left: 20px;
+    line-height: 1.8;
+  }
+
+  .wgra-ghr-help strong { color: #fbe79a; }
+
+  .wgra-ghr-disclaimer {
+    font-size: 13px;
+    color: #cfcfcf;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .wgra-ghr-wrapper { padding: 40px 14px 56px; }
+    .wgra-ghr-card { padding: 22px 16px; }
+    .wgra-ghr-levels { grid-template-columns: repeat(2, 1fr); }
+    .wgra-ghr-question { font-size: 19px; }
+    .wgra-ghr-option { font-size: 15px; }
+    .wgra-ghr-meta { text-align: left; }
+    .wgra-ghr-btn, .wgra-ghr-btn-ghost { width: 100%; }
+  }
+
+  /* ================= ANDROID APP SHELL ================= */
+  :root { --bar-h: 56px; --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    background: #000;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+  /* Pure black so the logo's black background blends in (no visible box). */
+  #wgra-ghr-root { background: #000; padding: calc(var(--bar-h) + var(--safe-top) + 14px) 12px calc(28px + var(--safe-bottom)); min-height: 100vh; }
+  #wgra-ghr-root .wgra-ghr-inner { max-width: 820px; } #wgra-ghr-root .wgra-ghr-card { scroll-margin-top: calc(var(--bar-h) + var(--safe-top) + 10px); }
+  
+  
+
+  .app-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+    padding-top: var(--safe-top);
+    background: #000;
+    border-bottom: 1px solid rgba(212,175,55,0.25);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .app-bar-row { height: var(--bar-h); max-width: 820px; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 12px; }
+  .app-bar-logo { width: 36px; height: 36px; border-radius: 8px; }
+  .app-bar-title { flex: 1; min-width: 0; font-size: 19px; font-weight: 800; color: #fbe79a; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icon-btn { width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .icon-btn:active { background: rgba(255,255,255,0.1); }
+  .icon-btn svg { width: 24px; height: 24px; fill: #fdfaf0; }
+
+  /* Setup hero: big logo, shown only on the setup screen */
+  .app-hero { display: none; text-align: center; margin: 4px 0 18px; }
+  #wgra-ghr-root.is-intro .app-hero { display: block; }
+  .app-hero img { width: min(64vw, 260px, 34vh); height: min(64vw, 260px, 34vh); }
+  /* Landscape phones: keep the logo small so the game starts on screen */
+  @media (orientation: landscape) and (max-height: 560px) {
+    .app-hero { margin-bottom: 10px; }
+    .app-hero p { margin-top: 6px; font-size: 15px; }
+  }
+  .app-hero p { margin: 10px auto 0; max-width: 560px; font-size: 16px; line-height: 1.5; color: #f5e4b3; }
+
+  /* Bottom sheets: menu, tips, help, about, privacy, credits */
+  .scrim { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    max-width: 820px; margin: 0 auto; max-height: 85vh; overflow-y: auto;
+    background: #1a1a1a; border-radius: 24px 24px 0 0; border-top: 1px solid rgba(212,175,55,0.4);
+    padding: 10px 20px calc(24px + var(--safe-bottom));
+    transform: translateY(105%); transition: transform .3s cubic-bezier(.2,.8,.2,1);
+    color: #fdfaf0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .sheet.open { transform: none; }
+  .sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: #555; margin: 0 auto 14px; }
+  .sheet h3 { margin: 0 0 10px; font-size: 21px; color: #fbe79a; }
+  .sheet p, .sheet li { font-size: 15px; line-height: 1.6; color: #e8e4d6; }
+  .sheet ul { padding-left: 20px; margin: 0 0 10px; }
+  .sheet .muted { color: rgba(253,250,240,0.6); font-size: 14px; }
+  .sheet-close {
+    display: block; width: 100%; margin-top: 14px; min-height: 50px; border: 0; border-radius: 14px;
+    background: #2a2a2a; color: #fbe79a; font: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
+  }
+  .menu-item { display: flex; align-items: center; gap: 16px; width: 100%; padding: 14px 6px; border: 0; background: transparent; color: #fdfaf0; font: inherit; font-size: 16px; text-align: left; cursor: pointer; border-radius: 12px; }
+  .menu-item:active { background: rgba(255,255,255,0.06); }
+  .menu-item svg { width: 22px; height: 22px; fill: #d4af37; flex: none; }
+
+  /* Intro splash: the big logo while the app opens */
+  .app-splash { position: fixed; inset: 0; z-index: 100; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity .45s ease; }
+  .app-splash img { width: min(80vw, 80vh, 520px); height: min(80vw, 80vh, 520px); animation: app-splash-in .6s ease both; }
+  .app-splash.out { opacity: 0; pointer-events: none; }
+  @keyframes app-splash-in { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .app-splash, .app-splash img, .sheet, .scrim { animation: none; transition: none; } }
+  @media (max-width: 380px) { .app-bar-title { font-size: 16.5px; letter-spacing: 0; } .app-bar-row { gap: 8px; } }
 </style>
 </head>
 <body>
-<div class="app" id="app">
+<div id="app-splash" class="app-splash" aria-hidden="true"><img src="logo.jpg" alt=""></div>
 
-  <section id="screen-home">
-    <div class="brand">
-      <img src="logo.png" alt="Guardians of Health and Recovery logo" />
-      <div class="sub">WGRALGO</div>
-      <h1>Guardians of Health &amp; Recovery&trade;</h1>
-      <p class="tag">Practice health, recovery, ethics, confidentiality, and pharmacology knowledge through round-based quiz play.</p>
-    </div>
-    <div class="panel">
-      <button class="btn primary" id="btn-start">Start Quiz</button>
-      <button class="btn ghost" id="btn-how">How It Works</button>
-    </div>
-    <div class="disclaimer">
-      Educational practice only. Not medical, mental health, legal, counseling, or certification advice. Does not replace official CASAC coursework, supervision, exam prep, clinical training, or guidance from qualified professionals. For emergencies, contact emergency services.
-    </div>
-    <footer>&copy; <span id="year"></span> <span class="gold">WGRALGO</span> &middot; The Wealth Gap Resolution Algorithm&trade; Inc.</footer>
-  </section>
+<header class="app-bar">
+  <div class="app-bar-row">
+    <img class="app-bar-logo" src="logo.jpg" alt="">
+    <div class="app-bar-title">Health &amp; Recovery</div>
+    <button type="button" class="icon-btn" data-sheet="sheet-menu" aria-label="More options"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></button>
+  </div>
+</header>
 
-  <section id="screen-how" class="hidden">
-    <div class="brand">
-      <h1>How It Works</h1>
-      <p class="tag">Round-based educational practice.</p>
+<div class="wgra-ghr-wrapper is-intro" id="wgra-ghr-root">
+  <div class="wgra-ghr-inner">
+    <div class="app-hero">
+      <img src="logo.jpg" alt="Guardians of Health &amp; Recovery logo">
+      <p>Learn how alcohol and drugs affect the body, how to respond in an emergency, and how to support
+        recovery — for yourself, your family, and your community.</p>
     </div>
-    <div class="panel how">
-      <ol>
-        <li><span class="key">10 randomized questions</span> per round.</li>
-        <li>Categories: <span class="key">CASAC Practice, Ethics, Confidentiality, Pharmacology / Health Awareness</span>.</li>
-        <li>Tap an answer. You will see if you were <span class="key">correct or incorrect</span>, the correct answer, an explanation, and a short learning tip.</li>
-        <li>Your <span class="key">score is shown out of 10</span>. The round complete screen shows strengths and weak spots by category.</li>
-        <li>Replay anytime &mdash; questions reshuffle each round.</li>
-      </ol>
-    </div>
-    <div class="disclaimer">
-      Educational practice only. Confidentiality has legal and ethical limits. Medical, withdrawal, overdose, and medication questions should direct people to qualified professionals. This app does not certify anyone and does not replace CASAC coursework, supervision, or official exam prep.
-    </div>
-    <div class="panel">
-      <button class="btn primary" id="btn-how-start">Start Quiz</button>
-      <button class="btn ghost" id="btn-how-back">Back</button>
-    </div>
-  </section>
 
-  <section id="screen-quiz" class="hidden">
-    <div class="hud">
-      <span class="pill"><span class="dot"></span> <span id="q-index">Question 1/10</span></span>
-      <span class="pill"><span class="dot"></span> Score: <span id="q-score">0</span>/10</span>
-    </div>
-    <div class="progress"><span id="q-progress"></span></div>
-    <div class="panel">
-      <span class="badge" id="q-badge">CASAC</span>
-      <div class="qcard" id="q-text"></div>
-      <div id="q-choices"></div>
-      <div id="q-feedback" class="hidden"></div>
-      <button class="btn primary hidden" id="btn-next">Next Question</button>
-    </div>
-    <div class="panel">
-      <button class="btn ghost" id="btn-quit">Quit Round</button>
-    </div>
-  </section>
-
-  <section id="screen-result" class="hidden">
-    <div class="brand">
-      <h1>Round Complete</h1>
-      <p class="tag">Review your strengths and weak spots, then play again.</p>
-    </div>
-    <div class="panel">
-      <div class="result-stats">
-        <div class="stat"><div class="v" id="r-score">0/10</div><div class="l">Score</div></div>
-        <div class="stat"><div class="v" id="r-pct">0%</div><div class="l">Accuracy</div></div>
+    <!-- INTRO -->
+    <div class="wgra-ghr-card" id="wgra-ghr-intro">
+      <p>
+        Each round has <strong>10 questions</strong>. Some answers are common <strong>myths</strong> that many people
+        believe — if you pick one, a 💡 <strong>Myth buster</strong> explains the truth.
+      </p>
+      <p><strong>Choose your level:</strong></p>
+      <div class="wgra-ghr-levels" id="wgra-ghr-levels" role="group" aria-label="Choose a level">
+        <button type="button" class="wgra-ghr-level is-selected" data-level="mix" aria-pressed="true">All Levels<small>A mix of all three</small></button>
+        <button type="button" class="wgra-ghr-level" data-level="1" aria-pressed="false">Beginner<small>The basics everyone should know</small></button>
+        <button type="button" class="wgra-ghr-level" data-level="2" aria-pressed="false">Everyday<small>Real-life situations</small></button>
+        <button type="button" class="wgra-ghr-level" data-level="3" aria-pressed="false">Helper<small>For peer supporters & helpers</small></button>
       </div>
-      <div class="rating">
-        <div class="title" id="r-title">&mdash;</div>
-        <div class="msg" id="r-msg">&mdash;</div>
+      <div class="wgra-ghr-row" style="justify-content:flex-start;">
+        <button type="button" class="wgra-ghr-btn" id="wgra-ghr-start">Start the game</button>
       </div>
-      <div class="breakdown" id="r-breakdown"></div>
     </div>
-    <div class="panel">
-      <button class="btn primary" id="btn-again">Play Again</button>
-      <button class="btn ghost" id="btn-home">Home</button>
-    </div>
-    <div class="disclaimer">
-      Educational practice only. Not medical, mental health, legal, counseling, or certification advice. Encourage professional care for medical, psychiatric, overdose, withdrawal, or crisis questions.
-    </div>
-  </section>
 
+    <!-- QUESTION -->
+    <div class="wgra-ghr-card" id="wgra-ghr-play" style="display:none;">
+      <div class="wgra-ghr-top">
+        <div class="wgra-ghr-chip" id="wgra-ghr-chip">Beginner</div>
+        <div class="wgra-ghr-meta">
+          Question <strong id="wgra-ghr-count">1/10</strong> · Score <strong id="wgra-ghr-score">0</strong>
+        </div>
+      </div>
+      <div class="wgra-ghr-question" id="wgra-ghr-question"></div>
+      <div class="wgra-ghr-options" id="wgra-ghr-options"></div>
+      <div class="wgra-ghr-feedback" id="wgra-ghr-feedback" aria-live="polite"></div>
+      <div class="wgra-ghr-row">
+        <button type="button" class="wgra-ghr-btn-ghost" id="wgra-ghr-quit">Start over</button>
+        <button type="button" class="wgra-ghr-btn" id="wgra-ghr-next" disabled>Choose an answer</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="wgra-ghr-card" id="wgra-ghr-results" style="display:none;"></div>
+
+    <!-- HELP -->
+    <div class="wgra-ghr-card wgra-ghr-help">
+      <div class="wgra-ghr-h3">Need help now?</div>
+      <ul>
+        <li><strong>Emergency or overdose:</strong> call <strong>911</strong></li>
+        <li><strong>Mental health or suicide crisis:</strong> call or text <strong>988</strong></li>
+        <li><strong>Free, confidential treatment referrals (24/7):</strong> SAMHSA National Helpline, <strong>1-800-662-4357</strong></li>
+        <li><strong>Find treatment near you:</strong> <strong>FindTreatment.gov</strong></li>
+        <li><strong>Poison Control:</strong> <strong>1-800-222-1222</strong></li>
+        <li><strong>Quit smoking or vaping:</strong> <strong>1-800-QUIT-NOW</strong></li>
+      </ul>
+      <div class="wgra-ghr-disclaimer">
+        This game is for general education only. It is not medical, legal, or professional advice, and it is not
+        connected to any certification or licensing exam. Laws differ by state. Always talk with a health care
+        provider about your own situation.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="scrim" class="scrim"></div>
+
+<div id="sheet-menu" class="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="sheet-handle"></div>
+  <button type="button" class="menu-item" data-sheet="sheet-about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>About</button>
+  <button type="button" class="menu-item" data-sheet="sheet-privacy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>Privacy</button>
+  <button type="button" class="menu-item" data-sheet="sheet-credits"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Credits</button>
+</div>
+
+<div id="sheet-about" class="sheet" role="dialog" aria-modal="true" aria-label="About">
+  <div class="sheet-handle"></div>
+  <h3>About</h3>
+  <p>Guardians of Health &amp; Recovery is a free health, safety, and recovery quiz from WGRALGO / The Wealth Gap Resolution Algorithm™ Inc. Learn how alcohol and drugs affect the body, how to respond in an emergency, and how to support recovery.</p>
+  <h3>How it works</h3>
+  <ul>
+    <li>Pick a level: All Levels, Beginner, Everyday, or Helper.</li>
+    <li>Answer 10 random questions from a bank of 90. Every answer explains why, and common myths get a 💡 myth buster.</li>
+    <li>The results show how you did by topic, with a review of every question.</li>
+  </ul>
+  <h3>Need help now?</h3>
+  <ul>
+    <li>Emergency or overdose: call <strong>911</strong></li>
+    <li>Mental health or suicide crisis: call or text <strong>988</strong></li>
+    <li>SAMHSA National Helpline (free, confidential, 24/7): <strong>1-800-662-4357</strong></li>
+  </ul>
+  <p class="muted">For general education only. Not medical, legal, or professional advice, and not connected to any certification or licensing exam.</p>
+  <p class="muted">Guardians of Health &amp; Recovery v2.0.0</p>
+  <button type="button" class="sheet-close" data-close>Close</button>
+</div>
+
+<div id="sheet-privacy" class="sheet" role="dialog" aria-modal="true" aria-label="Privacy">
+  <div class="sheet-handle"></div>
+  <h3>Privacy</h3>
+  <p>This app works offline and doesn’t save anything on your device. It does not collect personal data.</p>
+  <ul>
+    <li>No ads</li>
+    <li>No account</li>
+    <li>No analytics, cookies, or trackers</li>
+    <li>No internet permission</li>
+  </ul>
+  <button type="button" class="sheet-close" data-close>Close</button>
+</div>
+
+<div id="sheet-credits" class="sheet" role="dialog" aria-modal="true" aria-label="Credits">
+  <div class="sheet-handle"></div>
+  <h3>Credits</h3>
+  <ul>
+    <li><strong>WGRALGO</strong> — Project owner, concept, direction, testing, and publishing.</li>
+    <li><strong>ChatGPT</strong> — Original web game assistance.</li>
+    <li><strong>Claude Code</strong> — Android app build, packaging, and GitHub project setup.</li>
+  </ul>
+  <p class="muted">Free and open source under the GNU General Public License v3.0. Made by WGRALGO / The Wealth Gap Resolution Algorithm™ Inc.</p>
+  <button type="button" class="sheet-close" data-close>Close</button>
 </div>
 
 <script>
-(function(){
-  "use strict";
-  document.getElementById("year").textContent = new Date().getFullYear();
+(function () {
+  /*
+    QUESTION BANK — 90 questions, 30 per level
+      lv:  1 Beginner, 2 Everyday, 3 Helper
+      t:   topic (used for the results breakdown)
+      q:   question
+      a:   correct answer
+      w:   three wrong answers. ["text", "myth buster"] marks a common myth.
+      why: the lesson shown after answering
+    Answers are shuffled every time.
+  */
+  const Q = [
+    /* ===================== BEGINNER ===================== */
+    { lv: 1, t: "Body & Brain",
+      q: "Addiction (a substance use disorder) is best described as:",
+      a: "A treatable medical condition that changes how the brain works",
+      w: [["A lack of willpower or morals — people who really want to quit can just stop", "Addiction changes brain circuits for reward, motivation, and self-control. It's a health condition, not a character flaw."], "Something that only happens to people from certain kinds of families", "A condition that can't be treated"],
+      why: "Like diabetes or heart disease, addiction is a chronic condition that can be treated and managed." },
 
-  var QUESTIONS = [
-    {c:"casac",cl:"CASAC Practice",q:"What is the main purpose of a substance use screening?",a:["Diagnose a substance use disorder","Identify whether a fuller assessment is needed","Decide a treatment plan","Set abstinence goals"],k:1,exp:"Screening is a brief check to see if a more thorough assessment is needed; it does not diagnose or set a treatment plan.",tip:"Screen = quick check. Assessment = deeper picture."},
-    {c:"casac",cl:"CASAC Practice",q:"Which of the following best describes the goal of a substance use assessment?",a:["A quick yes/no on whether use exists","A thorough picture of use, risks, supports, and needs","A confession of past behavior","A legal record"],k:1,exp:"An assessment gathers a fuller picture, including use, risks, strengths, history, and supports, to guide planning.",tip:"Assessment is about understanding the whole person, not labeling them."},
-    {c:"casac",cl:"CASAC Practice",q:"What does motivational interviewing primarily try to do?",a:["Convince the client to change","Confront denial","Strengthen the client's own motivation to change","Provide medical treatment"],k:2,exp:"Motivational interviewing strengthens a client's own reasons for change through respectful, collaborative conversation.",tip:"MI works with motivation already inside the person."},
-    {c:"casac",cl:"CASAC Practice",q:"Which is an example of client-centered language?",a:["Addict","Junkie","Person with a substance use disorder","User"],k:2,exp:"Person-first language separates the person from the condition and reduces stigma.",tip:"Person first, condition second."},
-    {c:"casac",cl:"CASAC Practice",q:"In the stages of change model, which stage describes someone considering change but not yet ready?",a:["Precontemplation","Contemplation","Preparation","Maintenance"],k:1,exp:"Contemplation is when a person is weighing reasons for and against change.",tip:"Contemplation = thinking about it, not doing it yet."},
-    {c:"casac",cl:"CASAC Practice",q:"Which of these is a basic principle of trauma-informed care?",a:["Push clients to retell trauma quickly","Assume trauma may be present and prioritize safety","Avoid all difficult topics forever","Diagnose trauma immediately"],k:1,exp:"Trauma-informed care assumes trauma may be present and emphasizes safety, trust, choice, and collaboration.",tip:"Safety first, story second."},
-    {c:"casac",cl:"CASAC Practice",q:"Harm reduction is best described as:",a:["Encouraging substance use","Reducing risks tied to use, even without immediate abstinence","Banning all use","Replacing therapy"],k:1,exp:"Harm reduction reduces health and safety risks associated with substance use; it does not promote use.",tip:"Harm reduction meets people where they are."},
-    {c:"casac",cl:"CASAC Practice",q:"What is relapse prevention mostly about?",a:["Punishing slips","Recognizing triggers and building coping plans","Forcing 30-day stays","Avoiding all emotions"],k:1,exp:"Relapse prevention focuses on identifying triggers and high-risk situations and building skills and supports.",tip:"Plan for triggers before they show up."},
-    {c:"casac",cl:"CASAC Practice",q:"A counselor notices a client lives in unsafe housing. The most appropriate first step is:",a:["Ignore it","Refer to appropriate housing or social services","Pay for their rent","Tell them to move"],k:1,exp:"Connecting clients with appropriate services is part of holistic recovery support and within scope.",tip:"Refer when needs go beyond your role."},
-    {c:"casac",cl:"CASAC Practice",q:"Which best supports a strong therapeutic alliance?",a:["Authority and control","Empathy, respect, and collaboration","Rigid rules with no input","Strict silence"],k:1,exp:"Empathy, respect, and collaboration help build trust and engagement.",tip:"Alliance grows from respect, not control."},
-    {c:"casac",cl:"CASAC Practice",q:"What is an appropriate response to a client expressing ambivalence about quitting?",a:["Demand a decision","Explore both sides of their feelings","Shame them","End the session"],k:1,exp:"Ambivalence is normal; exploring it respectfully can help the client clarify their own direction.",tip:"Hold space for both sides of change."},
-    {c:"casac",cl:"CASAC Practice",q:"Which is most consistent with recovery-oriented care?",a:["One pathway for everyone","Multiple pathways and supports tailored to the person","Only 12-step programs","Only medication"],k:1,exp:"Recovery can take many forms; recovery-oriented care respects multiple pathways.",tip:"Many roads to recovery."},
-    {c:"casac",cl:"CASAC Practice",q:"A treatment plan should be:",a:["Written only by the counselor","Collaborative with the client","Hidden from the client","One-size-fits-all"],k:1,exp:"Treatment planning works best when the client helps set goals and is informed throughout.",tip:"Plan with the client, not at them."},
-    {c:"casac",cl:"CASAC Practice",q:"What is the role of a counselor when a client has needs outside their scope?",a:["Provide the service anyway","Refer to the appropriate professional","Pretend it isn't important","Tell the client to figure it out"],k:1,exp:"Counselors refer to appropriate professionals (medical, legal, psychiatric, etc.) for needs outside their scope.",tip:"Refer out; don't stretch your scope."},
-    {c:"casac",cl:"CASAC Practice",q:"Which is a sign of a respectful intake conversation?",a:["Rapid-fire judgmental questions","Active listening and explaining what is being asked","Demanding answers","Reading from a form without speaking"],k:1,exp:"Active listening and transparency help clients feel safe and engaged.",tip:"Explain why you are asking, then listen."},
+    { lv: 1, t: "Overdose & Safety",
+      q: "Which is a sign of an opioid overdose?",
+      a: "Slow or no breathing, and can't be woken up",
+      w: ["Very fast talking and lots of energy", "Red, watery eyes, laughing a lot, and feeling very hungry", "Sneezing and a runny nose"],
+      why: "Other signs include tiny “pinpoint” pupils and gurgling or snoring sounds. Call 911 and give naloxone if you have it." },
 
-    {c:"ethics",cl:"Ethics",q:"A counselor offering to date a former client is best described as:",a:["A reasonable choice","A potential dual relationship and ethical concern","Standard practice","Unimportant"],k:1,exp:"Romantic or business ties with current or former clients are widely considered dual relationships that can harm clients.",tip:"Dual relationships blur trust and power."},
-    {c:"ethics",cl:"Ethics",q:"Scope of practice means:",a:["Doing whatever helps","Working within your training, credentials, and role","Avoiding referrals","Setting your own rules"],k:1,exp:"Scope of practice limits work to what your credentials and training authorize you to do.",tip:"Stay in your lane; refer the rest."},
-    {c:"ethics",cl:"Ethics",q:"Informed consent should include:",a:["Only the cost","Services, risks, benefits, confidentiality limits, and choices","Just a signature","Marketing materials"],k:1,exp:"Informed consent describes what services involve, limits of confidentiality, risks, benefits, and the client's choices.",tip:"Consent is about understanding, not just signing."},
-    {c:"ethics",cl:"Ethics",q:"Which statement reflects cultural humility?",a:["I am the expert on every culture","I keep learning and respect each client's background","I assume everyone is the same","Culture does not matter"],k:1,exp:"Cultural humility is ongoing learning, respect, and recognition that the client is the expert on their own life.",tip:"Be a learner, not a know-it-all."},
-    {c:"ethics",cl:"Ethics",q:"A counselor accepts an expensive personal gift from a client. This is most likely:",a:["Required","An ethical concern related to boundaries","Always fine","A type of consent"],k:1,exp:"Expensive gifts can blur boundaries and create obligation; agencies usually have written policies on gifts.",tip:"Big gifts = big boundary issue."},
-    {c:"ethics",cl:"Ethics",q:"Avoiding judgmental language is important because:",a:["It is stylish","It supports dignity, trust, and engagement","It hides problems","It is required by gravity"],k:1,exp:"Respectful language supports dignity and helps clients engage in care.",tip:"Words shape the relationship."},
-    {c:"ethics",cl:"Ethics",q:"Documentation should generally be:",a:["Whatever feels right","Accurate, respectful, timely, and secure","A personal diary","Long stories about clients"],k:1,exp:"Records should be accurate, respectful, timely, and stored securely.",tip:"Document facts, not opinions about the person."},
-    {c:"ethics",cl:"Ethics",q:"A conflict of interest is best handled by:",a:["Ignoring it","Disclosing and addressing it appropriately","Hiding it","Using it for personal gain"],k:1,exp:"Conflicts of interest should be disclosed and managed according to ethical guidance and agency policy.",tip:"Disclose and address; never hide."},
-    {c:"ethics",cl:"Ethics",q:"Which best describes mandatory reporting in general terms?",a:["Reporting everything ever shared","A legal duty in specific safety situations defined by law","An optional choice","A casual decision"],k:1,exp:"Mandatory reporting laws require disclosure in specific safety situations; the details depend on jurisdiction and role.",tip:"Know your duty to report; it is not optional."},
-    {c:"ethics",cl:"Ethics",q:"A client asks the counselor to keep a secret about ongoing abuse of a child. The counselor should:",a:["Promise full secrecy","Explain reporting duties and follow the law","Forget the conversation","Tell the client it did not happen"],k:1,exp:"Counselors must follow legal duties about reporting child abuse and explain confidentiality limits clearly.",tip:"Safety obligations override personal promises."},
-    {c:"ethics",cl:"Ethics",q:"Respecting client dignity includes:",a:["Speaking respectfully and protecting client identity","Sharing their story freely","Mocking past behavior","Demanding gratitude"],k:0,exp:"Dignity is upheld through respectful communication and protecting client identity.",tip:"Dignity guides every interaction."},
-    {c:"ethics",cl:"Ethics",q:"A counselor should obtain supervision when:",a:["Never","They face unclear ethical or clinical situations","Only at year's end","Only by request from clients"],k:1,exp:"Supervision is a core safeguard for ethical and clinical decisions.",tip:"When in doubt, consult supervision."},
-    {c:"ethics",cl:"Ethics",q:"Self-care for counselors is:",a:["Optional luxury","An ethical responsibility supporting safe practice","Selfish","Unrelated to ethics"],k:1,exp:"Burnout impairs judgment; self-care helps maintain safe, ethical practice.",tip:"You can't pour from an empty cup."},
-    {c:"ethics",cl:"Ethics",q:"Posting a client's identifying details on social media is:",a:["Fine if no names","A serious ethics and confidentiality violation","Encouraged for awareness","Acceptable with hashtags"],k:1,exp:"Sharing identifying client information publicly is a major ethics and confidentiality violation regardless of names.",tip:"Identifiable details are still confidential."},
-    {c:"ethics",cl:"Ethics",q:"Best practice when a counselor's personal values clash with a client's choices is to:",a:["Lecture the client","Keep services client-centered or refer if it impairs care","Refuse without explanation","Punish the client"],k:1,exp:"Counselors stay client-centered and refer ethically if personal values impair care.",tip:"Client needs, not counselor opinions."},
+    { lv: 1, t: "Overdose & Safety",
+      q: "What is naloxone (Narcan)?",
+      a: "A medicine that can reverse an opioid overdose",
+      w: [["A medicine that reverses alcohol poisoning", "Naloxone only works on opioids — but it's safe to give if you're not sure what someone took."], "A drug test", "A prescription painkiller"],
+      why: "Naloxone comes as an easy-to-use nasal spray. Anyone can learn to use it in a few minutes." },
 
-    {c:"confid",cl:"Confidentiality",q:"Confidentiality in substance use services is best described as:",a:["Absolute and unlimited","Strongly protected with specific legal and ethical limits","Optional","Up to the counselor each day"],k:1,exp:"Confidentiality is strongly protected but has specific exceptions defined by law and ethics.",tip:"Strong, but not absolute."},
-    {c:"confid",cl:"Confidentiality",q:"A release of information should be:",a:["Verbal and casual","Specific, informed, time-limited, and revocable","A blanket forever release","Whatever staff want"],k:1,exp:"Releases should be specific about what information, to whom, for what purpose, and for how long, and be revocable.",tip:"Releases: specific, informed, revocable."},
-    {c:"confid",cl:"Confidentiality",q:"The minimum necessary principle means:",a:["Sharing everything just in case","Sharing only what is needed for the purpose","Sharing nothing ever","Sharing whatever is asked"],k:1,exp:"Share only the minimum necessary information for the purpose stated in the release.",tip:"Need-to-know only."},
-    {c:"confid",cl:"Confidentiality",q:"A counselor sees a client in public. The counselor should:",a:["Greet the client loudly and mention treatment","Let the client choose whether to acknowledge them","Avoid all eye contact forever","Talk about the case in public"],k:1,exp:"In public, let the client lead any acknowledgment to protect their privacy.",tip:"Client controls the public moment."},
-    {c:"confid",cl:"Confidentiality",q:"Discussing client cases in an elevator or hallway is:",a:["Standard","A casual disclosure risk and confidentiality violation","Required","Encouraged"],k:1,exp:"Discussing identifiable client information in public spaces risks confidentiality and dignity.",tip:"No client talk in public spaces."},
-    {c:"confid",cl:"Confidentiality",q:"Group setting confidentiality reminders should:",a:["Be skipped to save time","Be clearly stated and reinforced","Be hidden","Be optional"],k:1,exp:"Groups need clear, repeated reminders about respecting one another's privacy.",tip:"Group privacy must be taught and repeated."},
-    {c:"confid",cl:"Confidentiality",q:"Secure documentation means:",a:["Open files on a public desk","Stored, transmitted, and accessed only as policy and law allow","Posted on social media","Mailed to anyone"],k:1,exp:"Records are stored, sent, and accessed according to policy and law.",tip:"Security is a daily habit, not an event."},
-    {c:"confid",cl:"Confidentiality",q:"A family member calls asking about a client. The counselor should:",a:["Confirm the client is in treatment","Not confirm or share without a valid release","Share session details","Discuss the diagnosis"],k:1,exp:"Without a valid release, do not confirm or share information.",tip:"No release, no disclosure."},
-    {c:"confid",cl:"Confidentiality",q:"Confidentiality limits typically include:",a:["Random staff curiosity","Specific safety situations defined by law","Holiday parties","Marketing opportunities"],k:1,exp:"Limits exist for specific safety situations defined by law, such as certain risks of harm and abuse reports.",tip:"Limits are legal, not casual."},
-    {c:"confid",cl:"Confidentiality",q:"A client wants to share their own story publicly. They can:",a:["Be stopped by the agency","Choose to share their own story; agency still protects records","Be reported","Be punished"],k:1,exp:"Clients can share their own experiences; the agency still must protect its records and other clients.",tip:"Client's own story belongs to them."},
-    {c:"confid",cl:"Confidentiality",q:"Sharing identifying information at a community meeting is:",a:["Encouraged","A confidentiality violation without proper consent","Required","Helpful"],k:1,exp:"Identifying information should not be shared without proper, informed consent.",tip:"Identifiable details need consent."},
-    {c:"confid",cl:"Confidentiality",q:"A client's record shows substance use history. A new outside provider asks for full records. Best step:",a:["Send everything by email","Get a specific, informed release first","Share verbally only","Post on a portal"],k:1,exp:"A specific release governs what is shared, with whom, and for what purpose.",tip:"Release first, share after."},
-    {c:"confid",cl:"Confidentiality",q:"When in doubt about disclosure, a counselor should:",a:["Guess","Pause and consult supervision and policy","Share quickly","Ask the client to decide alone"],k:1,exp:"Pause, consult supervision, and follow policy and law.",tip:"Doubt = pause and consult."},
-    {c:"confid",cl:"Confidentiality",q:"Texting clients about appointments should:",a:["Include diagnoses","Follow agency policy and avoid sensitive details","Be public posts","Include other clients"],k:1,exp:"Use approved methods, minimal information, and follow policy.",tip:"Less detail, more security."},
-    {c:"confid",cl:"Confidentiality",q:"Storing records on personal devices is generally:",a:["Encouraged","A risk that must follow strict policy","Required","Free of concern"],k:1,exp:"Personal devices raise security risks and must follow strict policy if allowed at all.",tip:"Personal devices = high risk."},
+    { lv: 1, t: "Overdose & Safety",
+      q: "Do you need a prescription to get naloxone nasal spray?",
+      a: "No — it's sold over the counter",
+      w: [["Yes — you need a doctor's prescription, just like most other medicines", "The FDA approved over-the-counter naloxone nasal spray in 2023."], "Only if you're over 65", "Only hospitals and ambulances are allowed to carry it"],
+      why: "Many health departments also give it out free. Keep naloxone at home, in your car, or in your bag — like a fire extinguisher for overdoses." },
 
-    {c:"pharma",cl:"Pharmacology",q:"Medication-assisted treatment (MAT) for opioid use disorder typically uses:",a:["Random medications","Evidence-based medications combined with counseling","No medication ever","Only herbal supplements"],k:1,exp:"MAT pairs evidence-based medications with counseling and supports as part of a comprehensive plan.",tip:"MAT = medication + support, not either alone."},
-    {c:"pharma",cl:"Pharmacology",q:"Naloxone is awareness-relevant because:",a:["It cures addiction","It can reverse an opioid overdose temporarily","It is a stimulant","It treats alcohol use"],k:1,exp:"Naloxone can temporarily reverse opioid overdose effects. Emergency services should still be contacted.",tip:"Naloxone buys time. Call for help."},
-    {c:"pharma",cl:"Pharmacology",q:"Combining alcohol with opioids or benzodiazepines is generally:",a:["Safer than either alone","Higher risk for dangerous respiratory depression","A required treatment","Harmless"],k:1,exp:"Combining depressants increases the risk of dangerous respiratory depression and overdose.",tip:"Depressants stack dangerously."},
-    {c:"pharma",cl:"Pharmacology",q:"Stimulants generally:",a:["Slow breathing and heart rate","Speed up alertness, heart rate, and blood pressure","Are sedatives","Are antibiotics"],k:1,exp:"Stimulants increase alertness, heart rate, and blood pressure and carry cardiovascular risks.",tip:"Stimulants = speed up; depressants = slow down."},
-    {c:"pharma",cl:"Pharmacology",q:"Opioids primarily:",a:["Stimulate alertness","Suppress pain and can suppress breathing","Cure infections","Treat psychosis"],k:1,exp:"Opioids relieve pain but can suppress breathing, especially at higher doses or with other depressants.",tip:"Opioids can quiet breathing."},
-    {c:"pharma",cl:"Pharmacology",q:"Benzodiazepines are:",a:["Stimulants","Depressants often prescribed for anxiety or seizures","Antibiotics","Antifungals"],k:1,exp:"Benzodiazepines are central nervous system depressants. Misuse and combination with other depressants is risky.",tip:"Benzos: powerful, prescription-only, risky to misuse."},
-    {c:"pharma",cl:"Pharmacology",q:"Alcohol withdrawal can be:",a:["Always mild","Medically dangerous in some people and may need professional care","A myth","Treated with more alcohol"],k:1,exp:"Severe alcohol withdrawal can be medically dangerous and may require professional medical care.",tip:"Severe alcohol withdrawal can be an emergency."},
-    {c:"pharma",cl:"Pharmacology",q:"Cannabis is best discussed as:",a:["Risk-free for everyone","A substance with possible risks and benefits depending on the person and context","Always harmful or always helpful","A vitamin"],k:1,exp:"Cannabis effects vary widely; it should be discussed honestly with attention to age, mental health, dosing, and legal status.",tip:"Honest, individualized, age-aware conversation."},
-    {c:"pharma",cl:"Pharmacology",q:"Tolerance generally means:",a:["Needing more of a substance to feel the same effect","An allergy","Sobriety","Withdrawal"],k:0,exp:"Tolerance is when more of a substance is needed to produce the same effect.",tip:"Tolerance = same effect needs more."},
-    {c:"pharma",cl:"Pharmacology",q:"After a period of abstinence, returning to a previous opioid dose can be:",a:["Safer","A higher overdose risk because tolerance has dropped","Without any risk","A cure"],k:1,exp:"Reduced tolerance after abstinence can make a previous dose dangerous and increase overdose risk.",tip:"Tolerance drops fast; doses do not."},
-    {c:"pharma",cl:"Pharmacology",q:"Counselors should:",a:["Recommend specific dosages","Avoid giving personalized medical advice and refer to medical professionals","Adjust medications","Diagnose conditions"],k:1,exp:"Personalized medical decisions belong with qualified medical professionals.",tip:"Refer medical questions to medical pros."},
-    {c:"pharma",cl:"Pharmacology",q:"A client says they want to stop a prescribed medication suddenly. The counselor should:",a:["Tell them to stop today","Encourage them to talk with the prescribing provider","Suggest a substitute","Hand them new meds"],k:1,exp:"Stopping certain medications suddenly can be unsafe. The prescribing professional should be involved.",tip:"Stopping meds is a medical conversation."},
-    {c:"pharma",cl:"Pharmacology",q:"Signs of possible opioid overdose can include:",a:["Energy and rapid speech","Slow or stopped breathing, blue lips, unresponsiveness","Loud singing","Bright skin"],k:1,exp:"Slow or stopped breathing, blue or gray skin, and unresponsiveness are red flags. Call emergency services.",tip:"Overdose = call for help, don't wait."},
-    {c:"pharma",cl:"Pharmacology",q:"Polypharmacy means:",a:["Using one substance only","Using multiple substances or medications, which can raise interaction risks","Avoiding all medications","A type of therapy"],k:1,exp:"Polypharmacy involves multiple substances or medications and can increase interaction risks; medical review helps.",tip:"More substances, more interactions."},
-    {c:"pharma",cl:"Pharmacology",q:"Encouraging professional care means:",a:["Telling people to skip doctors","Helping connect them with qualified medical, mental health, and emergency services as appropriate","Replacing their doctor","Avoiding all referrals"],k:1,exp:"Counselors connect clients with qualified care for medical, psychiatric, and emergency needs.",tip:"Be the bridge, not the doctor."}
+    { lv: 1, t: "Overdose & Safety",
+      q: "Can naloxone hurt someone who is unresponsive but did NOT take opioids?",
+      a: "No — it won't harm them",
+      w: [["Yes, it can cause an overdose", "Naloxone has no effect on someone without opioids in their system."], "Yes, it's addictive if used more than once", "Only if they're a child"],
+      why: "When in doubt, give naloxone and call 911. It can only help in an opioid overdose." },
+
+    { lv: 1, t: "Overdose & Safety",
+      q: "What is fentanyl?",
+      a: "A very powerful opioid",
+      w: ["A mild sleep aid sold at pharmacies", "A strong type of marijuana", "A prescription vitamin used in hospitals to help patients recover"],
+      why: "Fentanyl is about 50 times stronger than heroin and is often mixed into other drugs and fake pills. A tiny amount can be deadly, and people often don't know it's in their drugs." },
+
+    { lv: 1, t: "Overdose & Safety",
+      q: "A friend offers you a pill they say is “Xanax” or “Percocet” from someone they know. What's the risk?",
+      a: "It could be a fake pill made with fentanyl — even one can be deadly",
+      w: [["No risk — if it looks exactly like the real thing, it's safe", "Fake pills are made to look exactly like real medicine. You can't tell by looking."], "Only risky if you take more than five", "Only risky if you mix it with alcohol"],
+      why: "Only take medicine from a pharmacy with your own prescription." },
+
+    { lv: 1, t: "Alcohol",
+      q: "Which counts as one “standard drink” in the U.S.?",
+      a: "12 oz of regular beer, 5 oz of wine, or 1.5 oz of liquor",
+      w: ["A 40-oz malt liquor", "A full bottle of wine, if you drink it slowly over a whole evening", "Any drink, in any size cup"],
+      why: "Many real-life drinks hold more than one standard drink. A large mixed drink can hold two or three." },
+
+    { lv: 1, t: "Alcohol",
+      q: "What sobers someone up after drinking?",
+      a: "Only time",
+      w: [["Coffee", "Coffee may make someone more awake, but they're just as drunk. That's dangerous if they decide to drive."], ["A cold shower", "A cold shower doesn't lower blood alcohol — and can be dangerous for someone very drunk."], "Eating a lot of bread"],
+      why: "The liver can only process alcohol at its own pace." },
+
+    { lv: 1, t: "Alcohol",
+      q: "About how fast does the liver process alcohol?",
+      a: "About one standard drink per hour",
+      w: ["About five drinks per hour for most adults", "Instantly, if you drink enough water", "About one drink per day"],
+      why: "Drinking faster than that makes blood alcohol rise." },
+
+    { lv: 1, t: "Alcohol",
+      q: "Someone passed out after heavy drinking. They're breathing very slowly and can't be woken. What should you do?",
+      a: "Call 911, turn them on their side, and stay with them",
+      w: [["Let them sleep it off — they'll feel better in the morning", "Blood alcohol can keep rising after someone passes out. Alcohol poisoning can be deadly."], "Give them coffee", "Put them in a cold shower to help wake them up and sober up"],
+      why: "Lying on their side helps keep them from choking if they vomit." },
+
+    { lv: 1, t: "Body & Brain",
+      q: "Why is it risky for teenagers to start using alcohol or drugs early?",
+      a: "The brain is still developing until about age 25",
+      w: [["It isn't risky — young bodies bounce back quickly and heal faster than adults", "Research shows the younger someone starts, the higher their risk of developing a substance use disorder."], "Only because it's illegal", "Teens can't become addicted"],
+      why: "Early use raises the risk of addiction. Delaying first use is one of the strongest ways to protect young people." },
+
+    { lv: 1, t: "Body & Brain",
+      q: "Which brain chemical is most linked to the “reward” feeling behind addiction?",
+      a: "Dopamine",
+      w: ["Melatonin", "Cortisol", "Adrenaline"],
+      why: "Drugs cause big surges of dopamine, which teaches the brain to want them again and again." },
+
+    { lv: 1, t: "Body & Brain",
+      q: "What does “tolerance” mean?",
+      a: "Needing more of a substance to feel the same effect",
+      w: ["Being allergic to a drug", "Feeling the effects more and more strongly each time you use", "Being able to quit easily"],
+      why: "Tolerance is one sign the body is adapting to a substance." },
+
+    { lv: 1, t: "Body & Brain",
+      q: "What is “withdrawal”?",
+      a: "Physical and mental symptoms when someone stops a substance their body is used to",
+      w: ["Leaving a treatment program early, before finishing all the steps", "A type of drug test", "Taking money out of a bank account"],
+      why: "Withdrawal can range from uncomfortable to dangerous, depending on the substance." },
+
+    { lv: 1, t: "Treatment & Recovery",
+      q: "Is it safe to suddenly stop drinking on your own after years of heavy daily drinking?",
+      a: "It can be dangerous — seizures are possible",
+      w: [["Yes, quitting cold turkey is always the safest and fastest way", "For heavy daily drinkers, sudden withdrawal can cause seizures and a deadly condition called delirium tremens (DTs)."], "Yes, the worst that happens is a headache", "It's only dangerous for older adults"],
+      why: "A doctor can help people withdraw safely, often with medication." },
+
+    { lv: 1, t: "Rights & Resources",
+      q: "What number can you call or text in the U.S. for a mental health or suicide crisis?",
+      a: "988",
+      w: ["411", ["211", "211 connects you to local services like food, housing, and utilities help. 988 is the crisis line."], "311"],
+      why: "988 is free, confidential, and available 24/7 by call, text, or chat." },
+
+    { lv: 1, t: "Rights & Resources",
+      q: "SAMHSA's National Helpline (1-800-662-4357) is:",
+      a: "Free, confidential, and open 24/7",
+      w: ["Only for doctors and nurses who need advice about patients", "A paid service", "Only open on weekdays during business hours"],
+      why: "It also provides help in Spanish, and you don't need insurance to call." },
+
+    { lv: 1, t: "Treatment & Recovery",
+      q: "Can people recover from addiction?",
+      a: "Yes — millions are in recovery",
+      w: ["No — once addicted, always using", ["Only after they hit “rock bottom”", "People don't need to hit rock bottom. Getting help earlier often leads to better outcomes."], "Only if they go to jail"],
+      why: "Recovery is possible, and there are many paths to it." },
+
+    { lv: 1, t: "Stigma & Language",
+      q: "Which phrase is the most respectful and accurate?",
+      a: "A person with a substance use disorder",
+      w: ["An addict", "A junkie", "A druggie"],
+      why: "“Person-first” language reduces stigma, and stigma is one reason people avoid getting help." },
+
+    { lv: 1, t: "Overdose & Safety",
+      q: "What's the safest way to get rid of leftover prescription painkillers?",
+      a: "Take them to a drug take-back site or a pharmacy disposal kiosk",
+      w: ["Give them to a friend who's in pain — it saves them a doctor's visit and money", "Keep them in case you need them later", "Leave them in an unlocked cabinet"],
+      why: "Many people who misuse painkillers get them from a friend or relative's medicine cabinet." },
+
+    { lv: 1, t: "Overdose & Safety",
+      q: "Is it okay to share your prescription medicine with a family member who has the same symptoms?",
+      a: "No — it can be dangerous",
+      w: ["Yes, if it's family", "Yes, if you're sure it's the same problem", "Yes, if you give only half a dose"],
+      why: "It's also illegal for many medicines. Medicines are prescribed for one person's body, health history, and other medications." },
+
+    { lv: 1, t: "Overdose & Safety",
+      q: "Why is mixing alcohol with opioids or anxiety/sleep pills (like Xanax) so dangerous?",
+      a: "They all slow breathing, and together they can stop it",
+      w: [["They cancel each other out — one speeds you up and the other slows you down", "They don't cancel out — they add up. Mixing them is a leading cause of overdose deaths."], "It only causes a headache", "It's only dangerous for athletes or people with heart problems"],
+      why: "Never mix these substances, and be extra careful with prescriptions that slow breathing." },
+
+    { lv: 1, t: "Body & Brain",
+      q: "What makes vaping addictive?",
+      a: "Most vapes contain nicotine, which is highly addictive",
+      w: ["The flavors", "The water vapor", ["Nothing — vapes aren't addictive, because there's no tobacco in them", "Many vapes contain as much nicotine as a pack of cigarettes or more."]],
+      why: "Free help to quit is available at 1-800-QUIT-NOW." },
+
+    { lv: 1, t: "Body & Brain",
+      q: "Can someone become addicted to marijuana (cannabis)?",
+      a: "Yes — cannabis use disorder is real",
+      w: [["No — marijuana is natural, so it can't be addictive", "Cannabis use disorder is a recognized medical condition. Today's products are often much stronger than in the past."], "Only if it's smoked, not eaten or vaped", "Only with edibles"],
+      why: "The risk is higher for people who start young. Legal doesn't mean risk-free — just like alcohol." },
+
+    { lv: 1, t: "Treatment & Recovery",
+      q: "In recovery, what is a “trigger”?",
+      a: "Something that sparks cravings",
+      w: ["A type of medication that stops cravings", "A positive result on a drug test", "A court order"],
+      why: "Triggers can be people, places, feelings, or situations. Knowing your triggers helps you plan ahead and protect your recovery." },
+
+    { lv: 1, t: "Rights & Resources",
+      q: "What do “Good Samaritan” overdose laws do in most states?",
+      a: "Give some legal protection to people who call 911 to report an overdose",
+      w: ["Require anyone who sees an overdose to pay for the ambulance", "Punish people who witness an overdose", "Give tax breaks for charity"],
+      why: "Protections differ by state, but the goal is the same: don't be afraid to call for help." },
+
+    { lv: 1, t: "Treatment & Recovery",
+      q: "Medications like buprenorphine and methadone for opioid addiction are:",
+      a: "Proven treatments that greatly lower the risk of overdose death",
+      w: [["Just swapping one addiction for another, since the person still takes an opioid", "These medications stabilize the brain so people can work, parent, and rebuild their lives. Taking them as prescribed is recovery."], "Only for people in jail", "Illegal in the U.S."],
+      why: "Medications for opioid use disorder are among the most effective treatments available." },
+
+    { lv: 1, t: "Alcohol",
+      q: "“Binge drinking” usually means:",
+      a: "4 or more drinks for women, or 5 or more for men, in about 2 hours",
+      w: ["One beer with dinner", "Drinking only on weekends", "Any drink after midnight"],
+      why: "Binge drinking raises the risk of accidents, alcohol poisoning, and long-term harm." },
+
+    { lv: 1, t: "Helping Loved Ones",
+      q: "What's the best way to start a conversation with a loved one about their drinking?",
+      a: "Choose a calm, sober moment and share your concern using “I” statements",
+      w: ["Confront them in front of the whole family", ["Wait until they've been drinking, since that's when they'll finally be honest about it", "People who are intoxicated can't have a productive conversation, and things can escalate."], "Post about it on social media"],
+      why: "For example: “I've been worried about you, and I care about you.”" },
+
+    /* ===================== EVERYDAY ===================== */
+    { lv: 2, t: "Overdose & Safety",
+      q: "You find someone unresponsive in a bathroom. There's a needle nearby. You have naloxone in your bag. What should you do?",
+      a: "Call 911 and give naloxone",
+      w: [["Put them in a cold shower to wake them up", "Cold water doesn't reverse an overdose and wastes precious time."], "Leave to find someone who knows them", "Wait 30 minutes to see if they wake up"],
+      why: "Then support their breathing and stay with them. Minutes matter — every second without breathing can cause brain damage." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "You gave naloxone and the person woke up. Now they want to leave. What's important to know?",
+      a: "The overdose can come back when naloxone wears off",
+      w: ["They're completely fine now — naloxone fixes the overdose for good", "They can't overdose again today", "Give them something to calm them down"],
+      why: "Encourage them to stay with someone or get medical care. They may also feel sick from sudden withdrawal." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "After one dose of nasal naloxone, the person still isn't breathing well after 2–3 minutes. What should you do?",
+      a: "Give a second dose",
+      w: [["Stop — one dose is the limit", "Strong opioids like fentanyl may need more than one dose. Extra doses are safe."], "Splash water on their face", "Leave to get help"],
+      why: "Use the other nostril and keep supporting their breathing until help arrives. Follow the directions on the package, and keep 911 on the line." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "A friend is coming home after 6 months in treatment (or jail) and plans to “celebrate” by using like before. What's the biggest danger?",
+      a: "Their tolerance is lower now, so their old amount could easily be deadly",
+      w: [["No danger — their body remembers how much it can handle from before", "Tolerance drops quickly during time away. This is one of the highest-risk times for overdose."], "They'll need more than before", "The only danger is getting caught"],
+      why: "Make sure they have naloxone, and never use alone." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "You hear that drugs in your area contain xylazine (“tranq”). Which is true?",
+      a: "Naloxone won't reverse xylazine — but still give naloxone and call 911 right away",
+      w: [["Naloxone fully reverses xylazine, so it's no more dangerous than before", "Xylazine is a sedative, not an opioid, so naloxone doesn't reverse it. Giving naloxone still reverses the fentanyl."], "Xylazine is harmless", "There's no point calling 911"],
+      why: "Xylazine is usually mixed with fentanyl, which naloxone does reverse. It can also cause serious skin wounds that need medical care." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "You saw a video claiming that touching fentanyl powder can make you overdose instantly. Is that accurate?",
+      a: "No — brief skin contact is very unlikely to cause an overdose",
+      w: ["Yes, any touch is deadly", "Yes — even being in the same room with it can make you overdose", "Only if it's a large amount"],
+      why: "Don't let fear stop you from helping. Wash your hands with soap and water if you touch any substance." },
+
+    { lv: 2, t: "Alcohol",
+      q: "At a party, a friend has had 6 shots and wants to drive home. They say they “feel fine.”",
+      a: "Take their keys, and get them a safe ride home or let them stay the night",
+      w: [["Let them drive if they drink a strong coffee and wait 15 minutes first", "Coffee doesn't lower blood alcohol."], "Follow behind them in your car", "Let them drive slowly on back roads"],
+      why: "Feeling fine doesn't mean being fine. Alcohol slows reaction time long before someone feels drunk." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "Your uncle drinks a fifth of vodka every day and plans to quit this weekend on his own.",
+      a: "Encourage him to talk to a doctor first",
+      w: [["Tell him cold turkey is the fastest and safest way", "For heavy daily drinkers, sudden withdrawal can be life-threatening."], "Tell him to switch to beer only", "Tell him to wait until after the holidays"],
+      why: "Quitting is a great goal. Medically supervised withdrawal can prevent dangerous seizures." },
+
+    { lv: 2, t: "Alcohol",
+      q: "You have a bad hangover and plan to take extra-strength acetaminophen (Tylenol) after a night of heavy drinking.",
+      a: "Be careful — alcohol plus acetaminophen can harm your liver",
+      w: ["It's the safest choice, since it's gentler on the stomach than other pain relievers", "Take a double dose so it works faster", "It cures hangovers"],
+      why: "Check with a pharmacist before mixing any medication with alcohol." },
+
+    { lv: 2, t: "Helping Loved Ones",
+      q: "Your adult son uses opioids. Which approach has strong research support for helping families get a loved one into treatment?",
+      a: "CRAFT: communicate positively, reward non-using behavior, and let natural consequences happen",
+      w: [["A surprise, TV-style confrontation “intervention” with the whole family", "Confrontational interventions often backfire. CRAFT gets more loved ones into treatment."], "Cut off all contact until he hits rock bottom", "Ignore it so he doesn't feel judged"],
+      why: "CRAFT (Community Reinforcement and Family Training) also improves family members' own well-being." },
+
+    { lv: 2, t: "Helping Loved Ones",
+      q: "Your sister asks for $300 for “rent,” but you suspect it will go to drugs. What's a supportive option?",
+      a: "Pay the landlord directly instead of giving cash",
+      w: ["Give her the cash so she doesn't feel judged", "Refuse to ever speak to her again", "Give her double so she has extra"],
+      why: "Paying bills directly or buying groceries supports real needs without funding the addiction." },
+
+    { lv: 2, t: "Helping Loved Ones",
+      q: "You're exhausted from supporting a family member in active addiction. What can help YOU?",
+      a: "Support groups like Al-Anon, and counseling for yourself",
+      w: ["Keep it all to yourself", ["Take full responsibility for their recovery — if you try harder, they'll get better", "You can support someone, but you can't control their recovery. Taking care of yourself matters too."], "Wait until they get better to get help"],
+      why: "Families heal too. You deserve support." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "Your friend in recovery had a drink after 2 years sober and feels like a failure. What's most helpful to say?",
+      a: "“A slip doesn't erase your progress. What kind of support do you need right now?”",
+      w: ["“I guess treatment didn't work — maybe you need to try something else entirely.”", ["“You might as well keep drinking now.”", "A slip is not a reason to give up. Many people return to recovery quickly with support."], "“You should be ashamed.”"],
+      why: "Shame pushes people away from help. Support brings them back." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "“HALT” is a common recovery reminder to check in with yourself. What does it stand for?",
+      a: "Hungry, Angry, Lonely, Tired",
+      w: ["Hope, Action, Love, Trust", "Help, Ask, Listen, Talk", "Health, Attitude, Life, Time"],
+      why: "These everyday states can make cravings stronger. Taking care of basic needs protects recovery." },
+
+    { lv: 2, t: "Rights & Resources",
+      q: "Can an employer fire someone just because they're in recovery and not currently using illegal drugs?",
+      a: "Generally no — the ADA can protect them",
+      w: ["Yes, at any time — addiction history is always a legal reason to fire someone", "Only if they tell coworkers", "Only until they've been sober 5 years"],
+      why: "The ADA doesn't protect current illegal drug use. Details vary, so ask a legal aid group about your situation." },
+
+    { lv: 2, t: "Rights & Resources",
+      q: "Can you take job-protected time off for addiction treatment?",
+      a: "Often yes — FMLA may cover it",
+      w: ["Never", "Only for alcohol treatment, not drug treatment", "Only if your boss personally agrees"],
+      why: "The Family and Medical Leave Act (FMLA) may cover treatment if you qualify. It's usually unpaid and depends on your employer's size and how long you've worked there." },
+
+    { lv: 2, t: "Rights & Resources",
+      q: "Your employer calls a substance use treatment program asking if you're a patient there. What usually happens?",
+      a: "They generally can't even confirm you're a patient",
+      w: ["They must tell your employer everything, since your job may be affected", "They can share if your boss asks politely", "They post a list of patients online"],
+      why: "Without your written consent, they usually can't share anything. Federal law (42 CFR Part 2) gives substance use treatment records extra privacy protection." },
+
+    { lv: 2, t: "Rights & Resources",
+      q: "Where can you search for licensed treatment programs near you?",
+      a: "FindTreatment.gov",
+      w: [["The first “luxury rehab” ad you see online", "Ads can come from marketers, not treatment programs. Always check a program's license."], "Social media messages from “recruiters”", "Only through the police"],
+      why: "It's run by the federal government (SAMHSA). You can filter by location, payment type, and services like medication treatment." },
+
+    { lv: 2, t: "Rights & Resources",
+      q: "Someone on social media offers free flights and housing if you go to a rehab in another state.",
+      a: "Be cautious — it could be a scam",
+      w: ["Accept right away — it's free", "Send them a photo of your insurance card", "Pay a deposit to hold your spot in the program"],
+      why: "This is called “patient brokering.” Check the program's license first. Some brokers are paid to fill beds, not to help. Use FindTreatment.gov or call 1-800-662-4357." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "What do fentanyl test strips do?",
+      a: "Detect fentanyl in drugs",
+      w: [["Make drugs safe to use by removing the fentanyl", "They don't make drugs safe — they give information. No amount of street drugs is guaranteed safe."], "Reverse an overdose in seconds", "Test your blood alcohol level"],
+      why: "They're a harm-reduction tool, legal in many states." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "Why do many health departments run syringe services programs?",
+      a: "They reduce HIV and hepatitis C",
+      w: [["To make it easier and more acceptable for people to use drugs", "Decades of research show these programs don't increase drug use — and people who use them are more likely to enter treatment."], "To track and arrest people who use drugs", "To sell needles for profit"],
+      why: "Harm reduction means keeping people alive and healthy so recovery stays possible." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "Your cousin takes buprenorphine for opioid use disorder. A relative says, “He's not really sober.” Which is true?",
+      a: "Medication-supported recovery is real recovery",
+      w: [["He's just trading one addiction for another as long as he takes it", "This common myth keeps people from life-saving treatment."], "He should stop suddenly to prove he's sober", "Medication-supported recovery doesn't count"],
+      why: "It also lowers overdose risk. Supporting someone's treatment choice helps them stay in recovery." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "Your friend drinks heavily and has severe anxiety. Which is true?",
+      a: "They often go together, and treating both works best",
+      w: ["Treat the anxiety only after a year sober", ["Drinking is fine for now, since it's helping keep the anxiety under control", "Alcohol may calm anxiety briefly, but it often makes anxiety worse over time."], "The two are unrelated"],
+      why: "This is called having co-occurring disorders, and it's very common." },
+
+    { lv: 2, t: "Helping Loved Ones",
+      q: "You find a vape in your 15-year-old's backpack. What's the best first step?",
+      a: "Stay calm, ask questions, and offer help to quit",
+      w: ["Yell and ground them for a year without discussing it", "Ignore it — everyone vapes", "Try it yourself to show them it's really harmless"],
+      why: "Teens are more likely to be honest when conversations feel safe." },
+
+    { lv: 2, t: "Overdose & Safety",
+      q: "Your mother's pain medication keeps running out faster than it should.",
+      a: "Lock it up and keep a count",
+      w: ["Ignore it", "Accuse the youngest grandchild", "Tell your mother to stop taking her medicine"],
+      why: "Then talk calmly with family about it. Secure storage protects everyone — especially teens and visitors." },
+
+    { lv: 2, t: "Alcohol",
+      q: "Your 72-year-old grandfather drinks 3 glasses of wine every night and takes several medications.",
+      a: "Encourage a talk with his doctor or pharmacist",
+      w: [["It's fine — red wine is heart-healthy, so a few glasses help", "Alcohol can interact with blood thinners, sleep aids, and many other medications, and older adults feel its effects more."], "Older adults can't develop new drinking problems", "Suggest he switch to liquor"],
+      why: "As we age, the body processes alcohol more slowly, which raises the risk of falls and interactions." },
+
+    { lv: 2, t: "Helping Loved Ones",
+      q: "A friend texts that they've been drinking and “don't see the point anymore.”",
+      a: "Ask directly about suicide and connect them to 988",
+      w: ["Wait until they sober up to talk", "Change the subject to something fun to cheer them up", ["Don't ask about suicide — it might give them the idea", "Asking directly does not increase risk. It shows you care and opens the door to help."]],
+      why: "Take it seriously and reach out right away. Alcohol raises suicide risk. If they're in immediate danger, call 911." },
+
+    { lv: 2, t: "Stigma & Language",
+      q: "A coworker jokes about “junkies” in the break room. Why does this matter?",
+      a: "Stigma makes people less likely to seek help",
+      w: ["It doesn't — it's just a joke, and words don't really hurt anyone", "It only matters at work", "It helps motivate people to finally quit using"],
+      why: "You never know who is struggling — or in recovery — in the room." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "Which of these best supports long-term recovery?",
+      a: "Stable housing, work or purpose, supportive relationships, and good health care",
+      w: [["Willpower alone — if someone really wants it, they don't need anything else", "Recovery is much stronger with support. These resources are called “recovery capital.”"], "Avoiding all friends forever", "Punishment for every mistake"],
+      why: "Recovery is about building a life that supports health." },
+
+    { lv: 2, t: "Treatment & Recovery",
+      q: "A pregnant woman with opioid use disorder wants to stop using. What's generally recommended?",
+      a: "Talk to a doctor about medication treatment",
+      w: [["Stop suddenly on her own right away, to protect the baby", "Sudden withdrawal and returning to use can put the pregnancy at risk. Medication is the recommended treatment."], "Hide it from her doctors", "Switch to alcohol instead, since it's legal and safer"],
+      why: "Getting care early protects both parent and baby." },
+
+    /* ===================== HELPER ===================== */
+    { lv: 3, t: "Helping Skills",
+      q: "OARS is a set of motivational interviewing skills. What does it stand for?",
+      a: "Open questions, Affirmations, Reflective listening, Summaries",
+      w: ["Observe, Assess, Refer, Support", "Organize, Advise, Remind, Supervise", "Order, Act, Review, Stop"],
+      why: "These four skills help people explore their own reasons for change." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "Which is an open-ended question?",
+      a: "“What would you like to be different in your life?”",
+      w: ["“Did you drink yesterday?”", "“You want to stop, right?”", "“Are you going to your meeting tonight, like you promised last week?”"],
+      why: "Open questions can't be answered with yes or no, so they invite people to share more." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "Which is a reflective listening statement?",
+      a: "“It sounds like you're worried about losing your job.”",
+      w: ["“Why don't you just stop?”", "“You need to go to a meeting.”", ["“I know exactly how you feel — I went through the same thing myself.”", "Even with lived experience, no one knows exactly how someone else feels. Reflect what THEY said instead."]],
+      why: "Reflections show you heard the person and help them hear themselves." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "Someone says, “I can stop anytime I want.” What's the most helpful response?",
+      a: "“You feel in control. What would it look like for you if you decided to stop?”",
+      w: [["“That's denial, and you know it — everyone can see you have a problem.”", "Arguing usually makes people defend their use even more."], "“Okay, let's change the subject.”", "“Prove it — stop today.”"],
+      why: "Reflecting and asking with curiosity avoids a power struggle." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "Someone says, “I know I should cut back, but drinking helps me relax.” Which stage of change fits best?",
+      a: "Contemplation",
+      w: ["Precontemplation", "Action", "Maintenance"],
+      why: "In contemplation, people see reasons to change but feel torn. Helping them explore both sides is key." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "In which stage of change has someone kept up changes for more than about 6 months?",
+      a: "Maintenance",
+      w: ["Preparation", "Contemplation", "Action"],
+      why: "Maintenance focuses on protecting progress and preventing a return to use." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "In motivational interviewing, “change talk” is:",
+      a: "When the person talks about their own reasons to change",
+      w: ["When the helper explains all the reasons why the person should change", "A relapse-prevention worksheet", "A court-ordered meeting"],
+      why: "People are more convinced by what they hear themselves say." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "The urge to jump in and fix someone's problem with advice is called:",
+      a: "The “righting reflex”",
+      w: ["Active listening", "Empathy", "Harm reduction"],
+      why: "Resisting the righting reflex lets people find their own motivation." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "Trauma-informed care shifts the question from “What's wrong with you?” to:",
+      a: "“What happened to you?”",
+      w: ["“Why can't you be normal?”", "“Who is to blame?”", "“When will you be fixed?”"],
+      why: "Many people with substance use problems have experienced trauma. Understanding it builds trust." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "Which are core principles of trauma-informed care?",
+      a: "Safety, trust, choice, collaboration, and empowerment",
+      w: ["Confrontation and strict rules, so people know exactly who's in charge", "Punishment for missed appointments", "Assuming everyone has PTSD"],
+      why: "Trauma-informed care avoids re-traumatizing people and gives them a voice." },
+
+    { lv: 3, t: "Screening & Care",
+      q: "SBIRT stands for:",
+      a: "Screening, Brief Intervention, and Referral to Treatment",
+      w: ["Substance Behavior Inventory and Recovery Test", "Support, Build, Inspire, Recover, Thrive — a five-step recovery model", "Sobriety Before Insurance Referral"],
+      why: "SBIRT helps catch risky use early — in clinics, schools, and emergency rooms." },
+
+    { lv: 3, t: "Screening & Care",
+      q: "Which screening tool is designed for teenagers' alcohol and drug use?",
+      a: "CRAFFT",
+      w: [["PHQ-9", "The PHQ-9 screens for depression."], ["GAD-7", "The GAD-7 screens for anxiety."], "A breathalyzer"],
+      why: "Screening tools help start conversations. They don't diagnose on their own." },
+
+    { lv: 3, t: "Screening & Care",
+      q: "The AUDIT is a screening tool for:",
+      a: "Risky alcohol use",
+      w: ["Depression", "Opioid withdrawal severity", "Anxiety and panic attacks"],
+      why: "The AUDIT (Alcohol Use Disorders Identification Test) has 10 questions and was developed by the World Health Organization." },
+
+    { lv: 3, t: "Screening & Care",
+      q: "The ASAM Criteria are used to:",
+      a: "Match a person to the right level of care",
+      w: ["Diagnose mental illness and decide which medication to prescribe", "Set the prices that insurance companies pay", "Test for drugs"],
+      why: "Levels range from outpatient to residential to hospital care. The right level depends on the whole person — health, risks, supports, and readiness." },
+
+    { lv: 3, t: "Medications",
+      q: "Which medication for opioid use disorder is a full opioid agonist given through specialized clinics?",
+      a: "Methadone",
+      w: [["Buprenorphine", "Buprenorphine is a partial agonist and can be prescribed in regular medical offices."], ["Naltrexone", "Naltrexone is an antagonist — it blocks opioids."], ["Naloxone", "Naloxone reverses overdoses; it isn't a daily treatment."]],
+      why: "Methadone is dispensed through licensed opioid treatment programs." },
+
+    { lv: 3, t: "Medications",
+      q: "Before starting naltrexone for opioid use disorder, a person usually needs to:",
+      a: "Be opioid-free for about 7–10 days",
+      w: ["Keep taking opioids alongside it", "Stay in a hospital for a month", "Do nothing special"],
+      why: "Starting naltrexone with opioids still in the body can cause sudden, severe withdrawal." },
+
+    { lv: 3, t: "Medications",
+      q: "Which of these medications is used to treat alcohol use disorder?",
+      a: "Acamprosate",
+      w: ["Buprenorphine", "Naloxone", "Stimulant ADHD medication"],
+      why: "Naltrexone and disulfiram are also used for alcohol use disorder." },
+
+    { lv: 3, t: "Medications",
+      q: "Why does buprenorphine carry a lower overdose risk than full opioid agonists?",
+      a: "It's a partial agonist with a “ceiling effect”",
+      w: ["It has no effect on the brain", "It's actually a stimulant", "It leaves the body within minutes, so it never builds up"],
+      why: "Its effects level off at higher doses. The risk rises if it's mixed with alcohol or sedatives like benzodiazepines." },
+
+    { lv: 3, t: "Medications",
+      q: "Withdrawal from which substances can be life-threatening and usually needs medical supervision?",
+      a: "Alcohol and benzodiazepines",
+      w: ["Caffeine, nicotine, and sugar", "Cannabis only", ["None — withdrawal is never dangerous", "Alcohol and benzodiazepine withdrawal can cause seizures and death without medical care."]],
+      why: "Opioid withdrawal is rarely deadly by itself, but it raises overdose risk if someone returns to use." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "A person you support offers you an expensive watch as a thank-you.",
+      a: "Politely decline and follow your organization's gift policy",
+      w: [["Accept it — refusing would be rude and could hurt their feelings and your relationship", "Valuable gifts can blur professional boundaries and create feelings of owing something."], "Accept it, but don't tell anyone", "Ask for cash instead"],
+      why: "A sincere thank-you note is a gift you can keep." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "A person you support sends you a friend request on social media.",
+      a: "Don't accept, and kindly explain your boundary",
+      w: ["Accept — it builds trust and shows you're a real person, not just a worker", "Accept, but never post anything", "Block them without explanation"],
+      why: "Clear boundaries protect both of you and keep the relationship focused on their recovery." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "Which is an example of a “dual relationship”?",
+      a: "Supporting someone who is also your landlord, relative, or business partner",
+      w: ["Working with two people from the same family in the same group at once", "Having two supervisors", "Co-leading a group with a coworker"],
+      why: "A second relationship can create conflicts of interest and harm trust." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "You're a peer supporter. Someone asks if they should stop taking their prescribed medication.",
+      a: "Encourage them to talk with their prescriber",
+      w: ["Tell them it's fine to stop if they feel better", "Suggest they cut the dose in half", "Share your own medication experience as a guide"],
+      why: "Medical advice is outside a peer supporter's role. Knowing your “scope of practice” keeps people safe." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "When can confidentiality usually be broken?",
+      a: "When there's serious risk of harm, or suspected child abuse",
+      w: ["Whenever a family member asks", "When you're curious about a case", "When it would make a good teaching story to share with friends outside work"],
+      why: "Always follow your state's laws and your organization's policy. Explain the limits of confidentiality at the start, and talk with a supervisor when unsure." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "You feel exhausted, irritable, and detached from the people you help. This may be:",
+      a: "Burnout or compassion fatigue",
+      w: ["A sign you're doing great work", ["Normal, and it never needs attention", "Ignoring burnout can harm both you and the people you serve."], "A reason to hide your feelings"],
+      why: "It's a sign to talk with a supervisor and practice self-care. Helpers need support too. Self-care is part of doing the job well." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "Writing a note that says a session happened when it didn't violates which ethical principle?",
+      a: "Veracity (truthfulness)",
+      w: ["Autonomy", "Justice", "Beneficence"],
+      why: "Honest records protect the people you serve, your organization, and you." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "A coworker smells strongly of alcohol at work. What's the best first step?",
+      a: "Follow your organization's policy and talk privately with a supervisor",
+      w: ["Ignore it to avoid conflict — it's not your place to get involved", "Announce it at the staff meeting", "Tell the people you serve"],
+      why: "Handling it privately and by policy protects everyone — including your coworker." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "Cultural humility means:",
+      a: "Staying curious and aware of your own biases",
+      w: ["Knowing everything about every culture you work with", "Treating everyone exactly the same, no matter their background", "Avoiding any talk about culture"],
+      why: "Each person is the expert on their own life and culture." },
+
+    { lv: 3, t: "Ethics & Boundaries",
+      q: "Good notes about the people you support should be:",
+      a: "Objective, accurate, timely, and respectful",
+      w: ["Full of personal opinions", "Written weeks later from memory, when you finally have time", "Shared on social media, as long as there are no names"],
+      why: "Write every note as if the person you're writing about will read it." },
+
+    { lv: 3, t: "Helping Skills",
+      q: "What makes peer support unique?",
+      a: "They use their own lived experience of recovery",
+      w: ["Peer supporters prescribe medication for recovery", "Peer supporters diagnose disorders", "Peer support replaces all professional treatment"],
+      why: "Lived experience builds hope and connection. Seeing someone who has “been there” can make recovery feel possible." }
   ];
 
-  var CAT_LABEL = {casac:"CASAC Practice", ethics:"Ethics", confid:"Confidentiality", pharma:"Pharmacology"};
-  var CAT_CLASS = {casac:"casac", ethics:"ethics", confid:"confid", pharma:"pharma"};
+  const PER_ROUND = 10;
+  const MIX = { 1: 3, 2: 4, 3: 3 };
+  const LEVEL_NAME = { 1: "Beginner", 2: "Everyday", 3: "Helper" };
 
-  var state = null;
+  let level = "mix";
+  let round = [];
+  let idx = 0;
+  let score = 0;
+  let answered = false;
+  let history = [];
+  let roundsPlayed = 0;
+  let totalRight = 0;
+  let totalAsked = 0;
+  const seen = new Set();
 
-  function $(id){ return document.getElementById(id); }
-  function show(id){
-    ["screen-home","screen-how","screen-quiz","screen-result"].forEach(function(s){
-      $(s).classList.add("hidden");
-    });
-    $(id).classList.remove("hidden");
-    window.scrollTo(0,0);
+  const rootEl = document.getElementById("wgra-ghr-root");
+  const introEl = document.getElementById("wgra-ghr-intro");
+  const playEl = document.getElementById("wgra-ghr-play");
+  const resultsEl = document.getElementById("wgra-ghr-results");
+  const levelsEl = document.getElementById("wgra-ghr-levels");
+  const chipEl = document.getElementById("wgra-ghr-chip");
+  const countEl = document.getElementById("wgra-ghr-count");
+  const scoreEl = document.getElementById("wgra-ghr-score");
+  const questionEl = document.getElementById("wgra-ghr-question");
+  const optionsEl = document.getElementById("wgra-ghr-options");
+  const feedbackEl = document.getElementById("wgra-ghr-feedback");
+  const nextBtn = document.getElementById("wgra-ghr-next");
+
+  let userInteracted = false;
+  ["click", "touchstart", "keydown", "wheel"].forEach(evt => {
+    window.addEventListener(evt, () => { userInteracted = true; }, { once: true, passive: true });
+  });
+
+  function scrollTo(el, block) {
+    if (!userInteracted || !el) return;
+    if (el === rootEl) { setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80); return; }
+    setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: block || "start" }), 80);
   }
-  function shuffle(arr){
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var t = a[i]; a[i] = a[j]; a[j] = t;
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
   }
-  function pickRound(){
-    var pool = shuffle(QUESTIONS).slice(0, 10);
-    return pool.map(function(q){
-      var idx = q.a.map(function(_, i){ return i; });
-      var order = shuffle(idx);
-      var choices = order.map(function(i){ return q.a[i]; });
-      var correct = order.indexOf(q.k);
-      return {c:q.c, cl:q.cl, q:q.q, choices:choices, correct:correct, exp:q.exp, tip:q.tip};
-    });
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  function startRound(){
-    state = {
-      round: pickRound(),
-      i: 0,
-      score: 0,
-      locked: false,
-      byCat: {casac:{c:0,t:0},ethics:{c:0,t:0},confid:{c:0,t:0},pharma:{c:0,t:0}}
-    };
-    show("screen-quiz");
-    renderQuestion();
+  function pick(lv, n) {
+    const pool = Q.filter(q => q.lv === lv);
+    let fresh = pool.filter(q => !seen.has(q));
+    if (fresh.length < n) { pool.forEach(q => seen.delete(q)); fresh = pool.slice(); }
+    const out = shuffle(fresh).slice(0, n);
+    out.forEach(q => seen.add(q));
+    return out;
   }
 
-  function renderQuestion(){
-    var q = state.round[state.i];
-    $("q-index").textContent = "Question " + (state.i + 1) + "/10";
-    $("q-score").textContent = state.score;
-    $("q-progress").style.width = ((state.i) / 10 * 100) + "%";
+  function buildRound() {
+    if (level === "mix") {
+      let out = [];
+      [1, 2, 3].forEach(lv => { out = out.concat(pick(lv, MIX[lv])); });
+      return out;
+    }
+    return pick(parseInt(level, 10), PER_ROUND);
+  }
 
-    var badge = $("q-badge");
-    badge.className = "badge " + CAT_CLASS[q.c];
-    badge.textContent = q.cl;
+  function choicesFor(q) {
+    const list = [{ text: q.a, ok: true, myth: "" }];
+    q.w.forEach(w => list.push(Array.isArray(w) ? { text: w[0], ok: false, myth: w[1] } : { text: w, ok: false, myth: "" }));
+    return shuffle(list);
+  }
 
-    $("q-text").textContent = q.q;
+  function start() {
+    round = buildRound().map(q => ({ q: q, c: choicesFor(q) }));
+    idx = 0; score = 0; history = []; roundsPlayed++;
+    introEl.style.display = "none";
+    resultsEl.style.display = "none";
+    playEl.style.display = "block";
+    rootEl.classList.remove("is-intro");
+    render();
+    scrollTo(rootEl);
+  }
 
-    var choicesEl = $("q-choices");
-    choicesEl.innerHTML = "";
-    var markers = ["A","B","C","D"];
-    q.choices.forEach(function(text, i){
-      var btn = document.createElement("button");
+  function render() {
+    const item = round[idx];
+    answered = false;
+    chipEl.textContent = LEVEL_NAME[item.q.lv] + " · " + item.q.t;
+    countEl.textContent = (idx + 1) + "/" + round.length;
+    scoreEl.textContent = score;
+    questionEl.textContent = item.q.q;
+    feedbackEl.innerHTML = "";
+    optionsEl.innerHTML = "";
+    nextBtn.disabled = true;
+    nextBtn.textContent = "Choose an answer";
+
+    item.c.forEach((c, i) => {
+      const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "choice";
-      btn.innerHTML = '<span class="marker">' + markers[i] + '</span><span>' + escapeHtml(text) + '</span>';
-      btn.addEventListener("click", function(){ pick(i, btn); });
-      choicesEl.appendChild(btn);
+      btn.className = "wgra-ghr-option";
+      const l = document.createElement("span");
+      l.className = "wgra-ghr-letter";
+      l.textContent = String.fromCharCode(65 + i) + ".";
+      const t = document.createElement("span");
+      t.textContent = c.text;
+      btn.appendChild(l);
+      btn.appendChild(t);
+      btn.addEventListener("click", () => answer(i));
+      optionsEl.appendChild(btn);
     });
-
-    var fb = $("q-feedback");
-    fb.classList.add("hidden");
-    fb.innerHTML = "";
-    $("btn-next").classList.add("hidden");
-    state.locked = false;
   }
 
-  function pick(i, btn){
-    if (state.locked) return;
-    state.locked = true;
-    var q = state.round[state.i];
-    state.byCat[q.c].t += 1;
-    var choices = document.querySelectorAll("#q-choices .choice");
-    choices.forEach(function(el, idx){
-      el.classList.add("locked");
-      if (idx === q.correct) el.classList.add("correct");
-      if (idx === i && i !== q.correct) el.classList.add("wrong");
+  function answer(i) {
+    if (answered) return;
+    answered = true;
+    const item = round[idx];
+    const chosen = item.c[i];
+    const buttons = optionsEl.querySelectorAll(".wgra-ghr-option");
+    buttons.forEach((b, j) => {
+      b.disabled = true;
+      if (item.c[j].ok) b.classList.add("correct");
+      else if (j === i) b.classList.add("incorrect");
     });
 
-    var good = i === q.correct;
-    if (good){
-      state.score += 1;
-      state.byCat[q.c].c += 1;
-      $("q-score").textContent = state.score;
+    totalAsked++;
+    if (chosen.ok) { score++; totalRight++; }
+    scoreEl.textContent = score;
+    history.push({ q: item.q, chosen: chosen.text, ok: chosen.ok });
+
+    let html = chosen.ok
+      ? '<span class="wgra-ghr-ok">Correct! ✅</span> ' + esc(item.q.why)
+      : '<span class="wgra-ghr-no">Not quite ❌</span> The answer is: <strong>' + esc(item.q.a) + ".</strong> " + esc(item.q.why);
+    if (!chosen.ok && chosen.myth) {
+      html += '<div class="wgra-ghr-myth"><strong>💡 Myth buster:</strong> ' + esc(chosen.myth) + "</div>";
     }
+    feedbackEl.innerHTML = html;
 
-    var fb = $("q-feedback");
-    fb.className = "feedback " + (good ? "good" : "bad");
-    fb.innerHTML =
-      '<h3>' + (good ? "Correct" : "Not quite") + '</h3>' +
-      '<p>' + escapeHtml(q.exp) + '</p>' +
-      '<div class="lesson"><strong>Learning tip:</strong> ' + escapeHtml(q.tip) + '</div>';
-    fb.classList.remove("hidden");
-    $("btn-next").classList.remove("hidden");
-    $("q-progress").style.width = ((state.i + 1) / 10 * 100) + "%";
+    nextBtn.disabled = false;
+    nextBtn.textContent = idx < round.length - 1 ? "Next question" : "See my results";
+    scrollTo(feedbackEl, "center");
   }
 
-  function next(){
-    state.i += 1;
-    if (state.i >= 10){
-      finish();
-    } else {
-      renderQuestion();
+  function results() {
+    playEl.style.display = "none";
+    resultsEl.style.display = "block";
+
+    const pct = Math.round((score / round.length) * 100);
+    let msg;
+    if (pct >= 90) msg = "Outstanding! You're ready to be a guardian of health and recovery in your community.";
+    else if (pct >= 70) msg = "Strong knowledge. Review the ones you missed — they could save a life someday.";
+    else if (pct >= 50) msg = "Good start. Every fact you learn here can help someone you love.";
+    else msg = "Thanks for learning. Review the answers below and try another round — this knowledge saves lives.";
+
+    const topics = {};
+    history.forEach(h => {
+      topics[h.q.t] = topics[h.q.t] || { right: 0, total: 0 };
+      topics[h.q.t].total++;
+      if (h.ok) topics[h.q.t].right++;
+    });
+
+    const topicRows = Object.keys(topics).map(t => {
+      const r = topics[t];
+      const icon = r.right === r.total ? "✅" : (r.right === 0 ? "📚" : "⚖️");
+      return "<tr><td>" + icon + " " + esc(t) + "</td><td>" + r.right + " / " + r.total + "</td></tr>";
+    }).join("");
+
+    const review = history.map((h, i) =>
+      '<div class="wgra-ghr-review-item">' +
+        '<div class="wgra-q">' + (i + 1) + ". " + esc(h.q.q) + "</div>" +
+        "<div>" + (h.ok ? '<span class="wgra-ghr-ok">Correct ✅</span>' : '<span class="wgra-ghr-no">Not quite ❌</span> You answered: ' + esc(h.chosen)) + "</div>" +
+        (h.ok ? "" : "<div>Correct answer: <strong>" + esc(h.q.a) + "</strong></div>") +
+        '<div class="wgra-why">💡 ' + esc(h.q.why) + "</div>" +
+      "</div>"
+    ).join("");
+
+    const levelText = level === "mix" ? "All Levels" : LEVEL_NAME[level];
+    const session = roundsPlayed > 1
+      ? '<div style="text-align:center;font-size:14px;color:#e6e6e6;">All rounds this visit: ' + totalRight + " of " + totalAsked + " correct</div>"
+      : "";
+
+    resultsEl.innerHTML =
+      '<div class="wgra-ghr-results-score">' + score + " out of " + round.length + " (" + pct + "%)</div>" +
+      '<div class="wgra-ghr-results-msg">' + levelText + " · Round " + roundsPlayed + "<br>" + msg + "</div>" +
+      session +
+      '<div class="wgra-ghr-actions">' +
+        '<button type="button" class="wgra-ghr-btn" id="wgra-ghr-again">Play another round</button>' +
+        '<button type="button" class="wgra-ghr-btn-ghost" id="wgra-ghr-change">Change level</button>' +
+      "</div>" +
+      '<div class="wgra-ghr-h3">How you did by topic</div>' +
+      '<table class="wgra-ghr-topics">' + topicRows + "</table>" +
+      '<div class="wgra-ghr-h3">Review this round</div>' + review;
+
+    document.getElementById("wgra-ghr-again").addEventListener("click", start);
+    document.getElementById("wgra-ghr-change").addEventListener("click", showIntro);
+    scrollTo(rootEl);
+  }
+
+  function showIntro() {
+    playEl.style.display = "none";
+    resultsEl.style.display = "none";
+    introEl.style.display = "block";
+    rootEl.classList.add("is-intro");
+    scrollTo(rootEl);
+  }
+
+  levelsEl.addEventListener("click", e => {
+    const btn = e.target.closest("button");
+    if (!btn || !btn.dataset.level) return;
+    level = btn.dataset.level;
+    levelsEl.querySelectorAll("button").forEach(b => {
+      const on = b === btn;
+      b.classList.toggle("is-selected", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  });
+
+  // Android back button: during a round, ask before quitting; from the
+  // results, go back to the level picker. On the level picker, let the app
+  // ask before exiting.
+  window.ghrBack = function () {
+    if (playEl.style.display !== "none") {
+      if (window.confirm("Quit this round? Your answers so far won't count.")) showIntro();
+      return true;
     }
+    if (resultsEl.style.display !== "none") {
+      showIntro();
+      return true;
+    }
+    return false;
+  };
+
+  document.getElementById("wgra-ghr-start").addEventListener("click", start);
+  document.getElementById("wgra-ghr-quit").addEventListener("click", showIntro);
+  nextBtn.addEventListener("click", () => {
+    if (!answered) return;
+    if (idx < round.length - 1) { idx++; render(); scrollTo(playEl); }
+    else results();
+  });
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var splash = document.getElementById("app-splash");
+  setTimeout(function () {
+    splash.classList.add("out");
+    setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 500);
+  }, 1300);
+
+  var scrim = document.getElementById("scrim");
+  function openSheetEl() { return document.querySelector(".sheet.open"); }
+  function closeSheets() {
+    Array.prototype.forEach.call(document.querySelectorAll(".sheet.open"), function (s) { s.classList.remove("open"); });
+    scrim.classList.remove("open");
   }
-
-  function finish(){
-    var pct = Math.round(state.score / 10 * 100);
-    $("r-score").textContent = state.score + "/10";
-    $("r-pct").textContent = pct + "%";
-    var title, msg;
-    if (state.score >= 9){ title = "Recovery Knowledge Guardian"; msg = "Excellent grasp of ethics, confidentiality, and care basics. Keep refining with supervision and study."; }
-    else if (state.score >= 7){ title = "Strong Practice Ready"; msg = "Solid foundation. Review missed areas to sharpen consistency."; }
-    else if (state.score >= 5){ title = "Building the Foundation"; msg = "You are on your way. Replay rounds and study weaker categories."; }
-    else if (state.score >= 3){ title = "Needs Review"; msg = "Spend time with the core concepts. Repetition builds clarity."; }
-    else { title = "Restart the Round"; msg = "Reset, slow down, read each tip, and try again."; }
-    $("r-title").textContent = title;
-    $("r-msg").textContent = msg;
-
-    var bd = $("r-breakdown");
-    bd.innerHTML = "";
-    ["casac","ethics","confid","pharma"].forEach(function(c){
-      var row = state.byCat[c];
-      if (row.t === 0) return;
-      var div = document.createElement("div");
-      div.className = "brow";
-      div.innerHTML = '<span class="name">' + CAT_LABEL[c] + '</span><span class="val">' + row.c + ' / ' + row.t + '</span>';
-      bd.appendChild(div);
-    });
-    show("screen-result");
+  function openSheet(id) {
+    closeSheets();
+    var s = document.getElementById(id);
+    if (!s) return;
+    s.classList.add("open");
+    scrim.classList.add("open");
   }
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest ? e.target.closest("[data-sheet],[data-close]") : null;
+    if (t && t.hasAttribute("data-sheet")) { openSheet(t.getAttribute("data-sheet")); return; }
+    if (t && t.hasAttribute("data-close")) { closeSheets(); return; }
+    if (e.target === scrim) closeSheets();
+  });
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, function(ch){
-      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch];
-    });
-  }
-
-  $("btn-start").addEventListener("click", startRound);
-  $("btn-how").addEventListener("click", function(){ show("screen-how"); });
-  $("btn-how-back").addEventListener("click", function(){ show("screen-home"); });
-  $("btn-how-start").addEventListener("click", startRound);
-  $("btn-next").addEventListener("click", next);
-  $("btn-quit").addEventListener("click", function(){ if (confirm("Quit this round? Your progress will be lost.")) show("screen-home"); });
-  $("btn-again").addEventListener("click", startRound);
-  $("btn-home").addEventListener("click", function(){ show("screen-home"); });
-
-  show("screen-home");
+  // Android back button (called by MainActivity). Returns true when handled;
+  // false lets the app ask before exiting.
+  window.onAndroidBack = function () {
+    if (openSheetEl()) { closeSheets(); return true; }
+    if (window.ghrBack && window.ghrBack()) return true;
+    return false;
+  };
 })();
 </script>
 </body>

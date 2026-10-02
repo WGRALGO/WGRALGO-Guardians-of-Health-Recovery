@@ -1,14 +1,25 @@
 {
-  "name": "spot-the-scam",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "guardians-of-health-recovery",
+  "version": "2.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sync": "npx cap sync android",
+    "build:debug": "npx cap sync android && cd android && ./gradlew assembleDebug",
+    "build:release": "npx cap sync android && cd android && ./gradlew assembleRelease",
+    "validate": "bash tools/validate-release.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "android",
+    "capacitor",
+    "education",
+    "health",
+    "recovery",
+    "harm-reduction",
+    "offline",
+    "gplv3"
+  ],
+  "author": "WGRALGO / The Wealth Gap Resolution Algorithm Inc.",
+  "license": "GPL-3.0-only",
+  "description": "Offline Android health, safety, and recovery quiz from WGRALGO / The Wealth Gap Resolution Algorithm Inc.",
   "dependencies": {
     "@capacitor/android": "^6.2.1",
     "@capacitor/cli": "^6.2.1",

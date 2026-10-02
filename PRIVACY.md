@@ -2,7 +2,7 @@
 
 **App:** WGRALGO Guardians of Health &amp; Recovery
 **Publisher:** WGRALGO / The Wealth Gap Resolution Algorithm&trade; Inc.
-**Version:** 1.0.0
+**Version:** 2.0.0
 
 ## What the app does
 
@@ -23,7 +23,7 @@ The app is an offline educational health-and-recovery quiz. All questions, answe
 
 ## Android permissions
 
-The app declares **no** dangerous permissions and **no** `INTERNET` permission. It cannot make network requests.
+The app declares **no** dangerous permissions and **no** `INTERNET` permission (it is stripped from the final manifest). It cannot make network requests.
 
 ## Children
 
